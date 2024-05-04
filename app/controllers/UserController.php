@@ -1,6 +1,9 @@
 <?php
 
 require_once "app/models/User.php";
+require_once "app/models/Book.php";
+require_once "app/models/BookCart.php";
+
 class UserController
 {
    
@@ -8,6 +11,7 @@ class UserController
     {
         //logut if already logged in
         unset($_SESSION['user']) ; 
+        unset($_SESSION['cart']) ; 
         return Helper::view("login");
     }
 
@@ -16,10 +20,18 @@ class UserController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'];
             $password = $_POST['password'];
-
-           if( User::login($email, $password))
+            $user_id = User::login($email, $password);
+           if($user_id)
            {
+                $cart_books  = BookCart::fetchUserCart($user_id)??[];
+                foreach ($cart_books  as $cart_book) {
+                    $book_c = Book::fetchId($cart_book->getBookId());
+                    $cart_book->setBook($book_c);
+                }
+                $serialized_cart = serialize($cart_books);
+                Helper::session('cart', $serialized_cart);
                 // Redirect to home page after login
+                Helper::session('message', 'Login successful');
                 Helper::redirect(''); 
            }
            else
@@ -37,6 +49,7 @@ class UserController
     {
         //logut if already logged in
         unset($_SESSION['user']) ; 
+        unset($_SESSION['cart']) ; 
         return Helper::view("register");
     }
 
@@ -77,7 +90,6 @@ class UserController
 
     }
 
-
     public function logout()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -85,7 +97,6 @@ class UserController
             Helper::redirect('login_form'); 
         }
     }
-
 
     public function profile()
     {
@@ -124,7 +135,6 @@ class UserController
         }
     }
 
-
     public function list_users()
     {
         $users = User::fetchUsers($_GET['page'] ?? 1,['user']);
@@ -138,7 +148,4 @@ class UserController
         $users_page_count = User::UsersPageCount(['moderator' , 'administrator']);
         return Helper::view("admin_moderators", ['users' => $users ,'currentPage' => $_GET['page'] ?? 1 , 'totalPages' => $users_page_count]);
     }
-
-    
-
 }

@@ -1,87 +1,60 @@
 <?php
-    $title = "Home";
-    require('partials/header.php')
+$title = "Edit Book Page";
+require('partials/header.php')
 ?>
 
 <main class="container">
 
-<h1 class="text-center m-5">Admin Books Page</h1>
+    <h1 class="text-center m-5">Edit Book Page</h1>
 
-<?php
+    <?php
     require('partials/search.php')
-?>
+    ?>
+    <form class="mt-5" action="./book_edit_post" method="POST">
+        <input type="hidden" name="id" value="<?=  $book->getId()?>">
+        <div class="form-group">
+            <label for="Isbn">Isbn</label>
+            <input type="text" class="form-control" id="Isbn" name="Isbn" value="<?=  $book->getIsbn()?>" required>
+        </div>
+        <div class="form-group">
+            <label for="Title">Title</label>
+            <input type="text" class="form-control" id="Title" name="Title"  value="<?=  $book->getTitle()?>" required>
+        </div>
+        <div class="form-group">
+            <label for="Image">Image</label>
+            <input type="text" class="form-control" id="Image" name="Image"  value="<?=  $book->getImage()?>" required>
+        </div>
+        <div class="form-group">
+            <label for="Price">Price (€)</label>
+            <input type="number" class="form-control" id="Price" name="Price"  value="<?=  $book->getPrice()?>" required>
+        </div>
 
-<table class="table mt-5">
-  <thead>
-    <tr>
-      <th scope="col">Isbn</th>
-      <th scope="col">Image</th>
-      <th scope="col">Title</th>
-      <th scope="col">Author</th>
-      <th scope="col">Category</th>
-      <th scope="col">Price</th>
-      <th scope="col">Action</th>
-    </tr>
-  </thead>
-  <tbody>
-  <?php foreach($books as $book): ?>
-    <tr>
-      <th scope="row"><?=$book->getIsbn() ?></th>
-      <td><img src="<?= $book->getImage() ?>"    height= 100></td>
-      <td><?= $book->getTitle() ?> €</td>
-      <td><?= $book->getPrice() ?> €</td>
-      <td><?= $book->getPrice() ?> €</td>
-      <td><?= $book->getPrice() ?> €</td>
-      <td>
-        <a href="./book_details?id=<?= $book->getId() ?>" class="btn btn-primary">Show</a>
-        <a href="./book_edit?id=<?= $book->getId() ?>" class="btn btn-warning">Edit</a>
-      </td>
-
-    </tr>
-    <?php endforeach; ?>
-  </tbody>
-</table>
+        <div class="form-group">
+            <label for="Author">Author</label>
+            <select class="form-control" id="Author" name="Author" required>
+                <?php foreach($authors as $author): ?>
+                    <option value="<?= $author->getId() ?>" <?= $book->getAuthorId() == $author->getId() ? 'selected' : '' ?>><?= $author->getName() ?> </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
 
 
+        <div class="form-group">
+            <label for="Category">Category</label>
+            <select class="form-control" id="Category" name="Category" required>
+                <?php foreach($categories as $category): ?>
+                    <option value="<?= $category->getId() ?>" <?= $book->getCategoryId() == $category->getId() ? 'selected' : '' ?>><?= $category->getName() ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
 
-<!-- Add pagination -->
-<nav aria-label="Page navigation">
-<ul class="pagination justify-content-center">
+        <div class="form-group">
+            <label for="IsFeatured">Is Featured</label>
+            <input type="checkbox" class="form-check" id="IsFeatured" name="IsFeatured" <?= $book->getIsFeatured() ? 'checked' : '' ?>>
+        </div>
 
-<?php 
-$currentParams = $_GET;
-unset($currentParams['page']);
-
-foreach ($currentParams as $key => $value) {
-  $currentParams[$key] = urlencode($value);
-}
-
-foreach ($currentParams as $key => $value) {
-  $currentParams[$key] = "$key=$value";
-}
-
-$currentParamsString = implode('&', $currentParams);
-?>
-<li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-  <a class="page-link" href="./admin_books?page=1&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">First</a>
-</li>
-<li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-  <a class="page-link" href="./admin_books?page=<?php echo $currentPage - 1; ?>&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">Previous</a>
-</li>
-
-<?php for ($i = max(1, $currentPage - 2); $i <= min($currentPage + 2, $totalPages); $i++): ?>
-  <li class="page-item <?php echo ($currentPage == $i) ? 'active' : ''; ?>">
-    <a class="page-link" href="./admin_books?page=<?php echo $i; ?>&<?= $currentParamsString ?>"><?php echo $i; ?></a>
-  </li>
-<?php endfor; ?>
-
-<li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-  <a class="page-link" href="./admin_books?page=<?php echo $currentPage + 1; ?>&<?= $currentParamsString ?>">Next</a>
-</li>
-<li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-  <a class="page-link" href="./admin_books?page=<?php echo $totalPages; ?>&<?= $currentParamsString ?>">Last</a>
-</li>
-
+        <button type="submit" class="btn btn-primary my-2">Add Book</button>
+    </form>
 
 </main>
 

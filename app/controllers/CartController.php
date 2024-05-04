@@ -4,26 +4,43 @@ require_once "app/models/Order.php";
 require_once "app/models/BookOrder.php";
 require_once "app/models/BookCart.php";
 require_once "app/models/Book.php";
+
 class CartController
 {
+
     public function cart()
     {
-    
         return Helper::view("cart");
     }
 
     public function add_to_cart()
     {
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $book = Book::fetchId($_POST['book_id']);
-                $cart = new BookCart();
-                $cart->setBookId($book->getId());
-                $cart->setQty($_POST['qty']);
-                $cart->setUserId($_SESSION['user']['id']);
-                $cart->create();
-                Helper::redirect('cart');
+                if (!$book) {
+                    Helper::session('error', 'Book not found');
+                    Helper::redirect('');
+                }
+                else if(!isset($_POST['qty']) || $_POST['qty'] <= 0)
+                {
+                    Helper::session('error', 'Invalid quantity');
+                    Helper::redirect('');
+                }
+                else if(!isset($_SESSION['user']))
+                {
+                    Helper::session('error', 'Please login to add to cart');
+                    Helper::redirect('login');
+                }
+                else {
+                    $cart = new BookCart();
+                    $cart->setBookId($book->getId());
+                    $cart->setQty($_POST['qty']);
+                    $cart->setUserId($_SESSION['user']['id']);
+                    $cart->create();
+                    BookCart::setCurrentCartUser( $_SESSION['user']['id']);
+                    Helper::redirect('cart');
+                }
             } catch (Exception $e) {
                 Helper::session('error', 'Error while adding to cart');
                 Helper::redirect('');
@@ -42,26 +59,43 @@ class CartController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           
             $cart = BookCart::fetchId($_POST['id']);
+            if(!$cart)
+            {
+                //return ajax response error
+                echo json_encode(['status' => 'error']);
+                return;
+            }
             $cart->delete();
+            BookCart::setCurrentCartUser( $_SESSION['user']['id']);
             echo json_encode(['status' => 'success']);
+            return;
         }
         else
         {
             //return ajax response error
             echo json_encode(['status' => 'error']);
+            return;
         }
     }
-
 
     public function update_cart()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           
             $cart = BookCart::fetchId($_POST['id']);
+            if(!$cart || !isset($_POST['qty']) || $_POST['qty'] <= 0)
+            {
+                //return ajax response error
+                echo json_encode(['status' => 'error']);
+                return;
+            }
+           
             $cart->setQty($_POST['qty']);
             $cart->update();
+            BookCart::setCurrentCartUser( $_SESSION['user']['id']);
             //return ajax response success
             echo json_encode(['status' => 'success']);
+            return;
         }
         else
         {
@@ -80,9 +114,24 @@ class CartController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $current_user = $_SESSION['user']['id'];
+            if(!isset($current_user))
+            {
+                Helper::session('error', 'Please login to checkout');
+                Helper::redirect('login');
+            }
             $cart_books = BookCart::fetchUserCart($current_user);
+            if(!$cart_books)
+            {
+                Helper::session('error', 'Cart is empty');
+                Helper::redirect('cart');
+            }
             foreach ($cart_books as $cart_book) {
                 $book = Book::fetchId($cart_book->getBookId());
+                If(!$book)
+                {
+                    Helper::session('error', 'Book not found');
+                    Helper::redirect('');
+                }
                 $cart_book->setBook($book);
             }
             $total = 0;
@@ -113,6 +162,7 @@ class CartController
                 $book_order->create();
                 $cart_book->delete();
             }
+            BookCart::setCurrentCartUser( $_SESSION['user']['id']);
             Helper::session('message', 'Order placed successfully');
             Helper::redirect('');
         }

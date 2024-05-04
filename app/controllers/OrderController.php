@@ -4,9 +4,9 @@ require_once "app/models/Order.php";
 require_once "app/models/BookOrder.php";
 require_once "app/models/Book.php";
 require_once "app/models/User.php";
+
 class OrderController
 {
-  
 
     public function my_orders()
     {
@@ -21,12 +21,8 @@ class OrderController
             }
             $order->setTotal($total);
         }
-   
         return Helper::view("my_orders", ['my_orders' => $my_orders ,'currentPage' => $_GET['page'] ?? 1 , 'totalPages' => $my_orders_page_count]);
-
     }
-
-
         
     public function order_details()
     {
@@ -37,10 +33,9 @@ class OrderController
         }
         //check current user is the owner of the order
         if($order->getUserId() != $_SESSION['user']['id']){
-                // Redirect to 403 page forbidden
-                Helper::redirect('403');
+            // Redirect to 403 page forbidden
+            Helper::redirect('403');
         }
-
         $order_items = BookOrder::getBooks($order->getId());
         $total = 0;
         foreach ($order_items as $order_item) {
@@ -58,7 +53,6 @@ class OrderController
             // Redirect to 404 page not found
             Helper::redirect('404');
         }
-
         $order_items = BookOrder::getBooks($order->getId());
         $total = 0;
         foreach ($order_items as $order_item) {
@@ -82,8 +76,6 @@ class OrderController
         Helper::redirect('admin_orders');
     }
 
-  
-
     public function index()
     {
        
@@ -99,7 +91,5 @@ class OrderController
             $order->setUser(User::find($order->getUserId()));
         }
         return Helper::view("admin_orders", ['orders' => $orders, 'totalPages' => $orders_page_count  ,'currentPage' => $_GET['page'] ?? 1]);
-
     }
-
 }

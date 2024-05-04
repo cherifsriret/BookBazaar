@@ -8,7 +8,9 @@ class Wishlist
 {
 
     private $id;
+
     private $user_id;
+
     private $book_id;
 
     public function getId()
@@ -108,7 +110,5 @@ class Wishlist
 
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'Wishlist');
     }
-
-    
 
 }

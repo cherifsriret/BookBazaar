@@ -3,10 +3,11 @@
 /**
  * The Author class
  */
-
 class Author
 {
+
     private $id;
+    
     private $name;
 
     public function getId()
@@ -29,7 +30,6 @@ class Author
         $this->name = $value;
     }
 
-
     public static function fetchAll()
     {
         $dbh = App::get('dbh');
@@ -48,8 +48,6 @@ class Author
         $statement->execute([$id]);
         return $statement->fetch();
     }
-
- 
 
     public  function create()
     {
@@ -77,14 +75,18 @@ class Author
 
     public function delete()
     {
-        $dbh = App::get('dbh');
-
-        $query = "DELETE FROM authors WHERE id = :id";
-        $stmt = $dbh->prepare($query);
-        $stmt->bindParam(':id', $this->id);
-        $stmt->execute();
+        try {
+            $dbh = App::get('dbh');
+            $query = "DELETE FROM authors WHERE id = :id";
+            $stmt = $dbh->prepare($query);
+            $stmt->bindParam(':id', $this->id);
+            $stmt->execute();
+            return true;
+        }
+        catch (PDOException $e) {
+            return $e->getMessage();
+        }
     }
-
 
     public static function AuthorsPageCount()
     {
@@ -107,5 +109,4 @@ class Author
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'Author');
     }
-
 }

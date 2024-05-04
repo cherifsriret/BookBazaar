@@ -1,17 +1,14 @@
 <?php
-
-//connect to database
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "bazaar_books";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-
-
+    $config = require('config.php');
+    // Create a new PDO instance
+    $config = $config['database'];
+    $pdo = new PDO(
+        $config['connection'].';port='.$config['port'].';dbname='.$config['dbname'],
+        $config['username'],
+        $config['password'],
+        $config['options']
+      );
     //import books_dataset.csv
-
     $file = fopen("books_dataset.csv", "r");
     $books = array();
     $i = 0;
@@ -23,68 +20,60 @@ $conn = new mysqli($servername, $username, $password, $dbname);
         $book_title = $books[$i][3];
         $book_image = $books[$i][2];
         $book_isbn = $books[$i][0];
-       
         //insert authors if name not exists
         // Check if author exists
-        $stmt = $conn->prepare("SELECT * FROM authors WHERE name = ?");
-        $stmt->bind_param("s", $author_name);
+        $stmt = $pdo->prepare("SELECT * FROM authors WHERE name = ?");
+        $stmt->bindParam(1, $author_name);  
         $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
+        $result = $stmt->fetch();
+        if ($stmt->rowCount() > 0) {
             // Author exists
-            $author = $result->fetch_assoc();
+            $author = $result;
             $author_id = $author['id'];
         } else {
             // Author does not exist, insert new author
-            $stmt = $conn->prepare("INSERT INTO authors (name) VALUES (?)");
-            $stmt->bind_param("s", $author_name);
+            $stmt = $pdo->prepare("INSERT INTO authors (name) VALUES (?)");
+            $stmt->bindParam(1, $author_name);
             $stmt->execute();
-            $author_id = $stmt->insert_id;
+            $author_id = $pdo->lastInsertId();
         }
-
-        $stmt->close();
-
+        $stmt->closeCursor();
         //insert categories if name not exists
         // Check if category exists
-        $stmt = $conn->prepare("SELECT * FROM categories WHERE name = ?");
-        $stmt->bind_param("s", $category_name);
+        $stmt = $pdo->prepare("SELECT * FROM categories WHERE name = ?");
+        $stmt->bindParam(1, $category_name);
         $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
+        $result = $stmt->fetch();
+        if ($stmt->rowCount() > 0) {
             // Category exists
-            $category = $result->fetch_assoc();
+            $category = $result;
             $category_id = $category['id'];
         } else {
             // Category does not exist, insert new category
-            $stmt = $conn->prepare("INSERT INTO categories (name) VALUES (?)");
-            $stmt->bind_param("s", $category_name);
+            $stmt = $pdo->prepare("INSERT INTO categories (name) VALUES (?)");
+            $stmt->bindParam(1, $category_name);
             $stmt->execute();
-            $category_id = $stmt->insert_id;
+            $category_id = $pdo->lastInsertId();
         }
-
-        $stmt->close();
-
+        $stmt->closeCursor();
         //price random between 10 and 100
         $price = rand(10, 100);
-
-
-          // prepared statement with question mark placeholders (marqueurs de positionnement)
+        // prepared statement with question mark placeholders (marqueurs de positionnement)
         $req = "INSERT INTO books (isbn, title, image, price , author_id, category_id ) VALUES (?, ?, ?,?, ?, ?)";
-
-        $statement = $conn->prepare($req);
-        $statement->bind_param("ssssss", $book_isbn, $book_title, $book_image, $price, $author_id, $category_id);
+        $statement = $pdo->prepare($req);
+        $statement->bindParam(1, $book_isbn, PDO::PARAM_STR);
+        $statement->bindParam(2, $book_title, PDO::PARAM_STR);
+        $statement->bindParam(3, $book_image, PDO::PARAM_STR);
+        $statement->bindParam(4, $price, PDO::PARAM_INT);
+        $statement->bindParam(5, $author_id, PDO::PARAM_INT);
+        $statement->bindParam(6, $category_id, PDO::PARAM_INT);
         $statement->execute();
-        $statement->close();
-        
+        $statement->closeCursor();
+        $i++;
     }
     fclose($file);
-
-    //close connection
-    $conn->close();
-
-    var_export("Data imported successfully!")
+    var_export("Data imported successfully!");
 ?>
+
 
     

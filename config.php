@@ -13,7 +13,5 @@ return [
       PDO::ATTR_PERSISTENT => true
     ]
   ],
-  // if your app is not in the server's /, decomment and adapt
-  // (then you MUST use relative URLs everywhere)
   'install_prefix' => './',
 ];

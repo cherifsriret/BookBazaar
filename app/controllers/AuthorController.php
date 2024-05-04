@@ -1,7 +1,9 @@
 <?php
 require_once "app/models/Author.php";
+
 class AuthorController
 {
+    
     public function index()
     {
         $authors = Author::fetchAuthors($_GET['page'] ?? 1);
@@ -19,14 +21,17 @@ class AuthorController
                 $author->setName($name);
                 $author->create();
                 Helper::session('message', 'Created successfully');
-                Helper::redirect('admin_authors'); 
             }
             else
             {
                 Helper::session('error', "Author name  can't be empty.");
-                Helper::redirect('admin_authors'); 
             }
         }
+        else
+        {
+            Helper::session('error', 'Invalid request');
+        }
+        Helper::redirect('admin_authors');
     }
 
     public function update()
@@ -37,17 +42,26 @@ class AuthorController
             if(isset($id) && isset($name))
             {
                 $author = Author::find($id);
-                $author->setName($name);
-                $author->update();
-                Helper::session('message', 'Updated successfully');
-                Helper::redirect('admin_authors'); 
+                if(!$author){
+                    Helper::session('error', 'Author not found');
+                }
+                else
+                {
+                    $author->setName($name);
+                    $author->update();
+                    Helper::session('message', 'Updated successfully');
+                }
             }
             else
             {
                 Helper::session('error', "Author name can't be empty.");
-                Helper::redirect('admin_authors'); 
             }
         }
+        else
+        {
+            Helper::session('error', 'Invalid request');
+        }
+        Helper::redirect('admin_authors');
     }
 
     public function delete()
@@ -56,16 +70,24 @@ class AuthorController
             $id = $_POST['id'];
             $author = Author::find($id);
             if($author){
-                $author->delete();
-                Helper::session('message', 'Deleted successfully');
-                Helper::redirect('admin_authors'); 
+                $is_deleted = $author->delete();
+                if($is_deleted === true){
+                    Helper::session('message', 'Deleted successfully');
+                }
+                else
+                {
+                    Helper::session('error', "You can't delete this author.");
+                }
             }
             else
             {
                 Helper::session('error', 'Author not found');
-                Helper::redirect('admin_authors'); 
             }
         }
+        else
+        {
+            Helper::session('error', 'Invalid request');
+        }
+        Helper::redirect('admin_authors');
     }
-
 }

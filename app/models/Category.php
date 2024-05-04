@@ -3,10 +3,10 @@
 /**
  * The Category class
  */
-
 class Category
 {
     private $id;
+    
     private $name;
 
     public function getId()
@@ -38,8 +38,6 @@ class Category
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'Category');
     }
-
-
     
     public static function find($id)
     {
@@ -75,12 +73,18 @@ class Category
 
     public function delete()
     {
-        $dbh = App::get('dbh');
 
-        $query = "DELETE FROM categories WHERE id = :id";
-        $stmt = $dbh->prepare($query);
-        $stmt->bindParam(':id', $this->id);
-        $stmt->execute();
+        try {
+            $dbh = App::get('dbh');
+            $query = "DELETE FROM categories WHERE id = :id";
+            $stmt = $dbh->prepare($query);
+            $stmt->bindParam(':id', $this->id);
+            $stmt->execute();
+            return true;
+        }
+        catch (PDOException $e) {
+            return $e->getMessage();
+        }
     }
 
     public function getBooks()
@@ -94,8 +98,6 @@ class Category
 
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'Book');
     }
-
-
 
     public static function CategoriesPageCount()
     {

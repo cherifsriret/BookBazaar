@@ -15,8 +15,7 @@ class Connection
         $config['password'],
         $config['options']
       );
-var_dump($pdo);
-exit();
+
       return $pdo;
     } catch (PDOException $e)
     {

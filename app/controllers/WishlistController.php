@@ -8,9 +8,14 @@ require_once "app/models/Category.php";
 
 class WishlistController
 {
+    
     public function index()
     {
         $user = User::find($_SESSION['user']['id']);
+        if(!$user){
+            Helper::session('error', 'User not found');
+            Helper::redirect('login');
+        }
         $wishlist = Wishlist::fetchByUser($user->getId());
         $books = [];
         foreach($wishlist as $item){
@@ -27,12 +32,26 @@ class WishlistController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $book_id = $_POST['book_id'];
             $user = User::find($_SESSION['user']['id']);
+            if(!$user){
+                Helper::session('error', 'User not found');
+                Helper::redirect('login');
+            }
+            $book = Book::fetchId($book_id);
+            if(!$book){
+                Helper::session('error', 'Book not found');
+                Helper::redirect('');
+            }
             $wishlist = new Wishlist();
-            $wishlist->setBookId($book_id);
+            $wishlist->setBookId($book->getId());
             $wishlist->setUserId($user->getId());
             $wishlist->create();
             Helper::session('message', 'Added to wishlist successfully');
             Helper::redirect('wishlist'); 
+        }
+        else
+        {
+            Helper::session('error', 'Invalid request');
+            Helper::redirect(''); 
         }
     }
 
@@ -41,14 +60,28 @@ class WishlistController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $book_id = $_POST['book_id'];
             $user = User::find($_SESSION['user']['id']);
+            if(!$user){
+                Helper::session('error', 'User not found');
+                Helper::redirect('login');
+            }
+            $book = Book::fetchId($book_id);
+            if(!$book){
+                Helper::session('error', 'Book not found');
+                Helper::redirect('');
+            }
             $wishlist = Wishlist::fetchByUser($user->getId());
             foreach($wishlist as $item){
-                if($item->getBookId() == $book_id){
+                if($item->getBookId() == $book->getId()){
                     $item->delete();
                     Helper::session('message', 'Removed from wishlist successfully');
                     Helper::redirect('wishlist'); 
                 }
             }
+        }
+        else
+        {
+            Helper::session('error', 'Invalid request');
+            Helper::redirect(''); 
         }
     }
 }

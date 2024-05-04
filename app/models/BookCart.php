@@ -3,13 +3,17 @@
 /**
  * The BookCart class
  */
-
 class BookCart
 {
+
         private $id;
+
         private $user_id;
+
         private $book_id;
+
         private $qty;
+        
         private $book;
 
         public function getId()
@@ -51,7 +55,6 @@ class BookCart
             $this->qty = $value;
         }
 
-
         public function getBook()
         {
             return $this->book;
@@ -61,7 +64,6 @@ class BookCart
         {
             $this->book = $value;
         }
-
 
         public static function fetchUserCart($userId , $page = 1)
         {
@@ -76,7 +78,6 @@ class BookCart
             return $statement->fetchAll(PDO::FETCH_CLASS, 'BookCart');
 
         }
-
 
         public static function CartPageCount( $userId){
             $dbh = App::get('dbh');
@@ -100,7 +101,6 @@ class BookCart
             $stmt->setFetchMode(PDO::FETCH_CLASS, 'BookCart');
             return $stmt->fetch();
         }
-
 
         public function create()
         {
@@ -159,8 +159,6 @@ class BookCart
             $stmt->execute();
         }
 
-       
-
         public static function getCartTotal($userId)
         {
             $dbh = App::get('dbh');
@@ -187,5 +185,15 @@ class BookCart
             return $total['total'];
         }
 
+        public static function setCurrentCartUser($userId)
+        {
+            $cart_books  = BookCart::fetchUserCart($userId)??[];
+            foreach ($cart_books  as $cart_book) {
+                $book_c = Book::fetchId($cart_book->getBookId());
+                $cart_book->setBook($book_c);
+            }
+            $serialized_cart = serialize($cart_books);
+            Helper::session('cart', $serialized_cart);
+        }
 
 }

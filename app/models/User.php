@@ -115,10 +115,9 @@ class User
         $statement->setFetchMode(PDO::FETCH_CLASS, 'User');
         $statement->execute();
         $user = $statement->fetch();
-   
         if ($user && password_verify($password, $user->getPassword())) {
-            Helper::session('user',  ['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRole()]);
-            return true;
+            Helper::session('user',  ['id' => $user->getId(), 'email' => $user->getEmail(), 'role' => $user->getRole() ]);
+            return $user->getId() ;
         } else {
             return false;
         }

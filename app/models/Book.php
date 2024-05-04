@@ -1,10 +1,10 @@
 <?php
-
 /**
 * The Book class
 */
 class Book
 {
+
     // Attributes
     private $id;
 
@@ -25,7 +25,6 @@ class Book
     private $category;
 
     private $is_featured;
-
 
     // Getters and Setters
     public function getId()
@@ -98,7 +97,6 @@ class Book
         $this->author = $value;
     }
 
-
     public function getCategoryId()
     {
         return $this->category_id;
@@ -136,32 +134,31 @@ class Book
         $dbh = App::get('dbh');
         $limit = 12;
         $offset = ($page - 1) * $limit;
+        $query = "SELECT * FROM books WHERE 1 = 1";
 
-        $query = "SELECT * FROM books";
-
-        if ($author != null && $category != null) {
-            $query .= " WHERE author_id = :author AND category_id = :category";
-        } elseif ($author != null) {
-            $query .= " WHERE author_id = :author";
-        } elseif ($category != null) {
-            $query .= " WHERE category_id = :category";
+        if ($author != null) {
+            $query .= " AND author_id = :author";
         }
 
-        $query .= " ORDER BY id ASC LIMIT $limit OFFSET $offset";
-     
+        if ($category != null) {
+            $query .= " AND category_id = :category";
+        }
+
+        $query .= " ORDER BY id ASC LIMIT :limit OFFSET :offset";
+
         $statement = $dbh->prepare($query);
 
-        if ($author != null && $category != null) {
+        if ($author != null) {
             $statement->bindParam(':author', $author, PDO::PARAM_INT);
-            $statement->bindParam(':category', $category, PDO::PARAM_INT);
-        } elseif ($author != null) {
-            $statement->bindParam(':author', $author, PDO::PARAM_INT);
-        } elseif ($category != null) {
+        }
+        if ($category != null) {
             $statement->bindParam(':category', $category, PDO::PARAM_INT);
         }
-
+        $statement->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $statement->bindParam(':offset', $offset, PDO::PARAM_INT);
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_CLASS, 'Book');
+
     }
 
     public static function BooksPageCount($page = 1, $author = null, $category = null){
@@ -194,7 +191,6 @@ class Book
         $total = $result['count'];
         return ceil($total /  $limit);
     }
-
     
     public static function latestBooks( ){
         $dbh = App::get('dbh');
@@ -231,7 +227,6 @@ class Book
         return $statement->fetchAll(PDO::FETCH_CLASS, 'Book');
 
     }
-    
 
     public static function mostSellBooks( ){
         $dbh = App::get('dbh');
@@ -244,16 +239,12 @@ class Book
 
     public static function fetchId($id)
     {
-        // ASSUMPTION
-        //    - $id was validated by the caller
-
         $dbh = App::get('dbh');
         $statement = $dbh->prepare("SELECT * FROM books WHERE id = ?");
         $statement->setFetchMode(PDO::FETCH_CLASS, 'Book');
         $statement->execute([$id]);
         return $statement->fetch();
     }
-
 
     public static function fetchSameAuthor($author_id, $book_id)
     {
@@ -317,14 +308,26 @@ class Book
     public static function search($search)
     {
         $dbh = App::get('dbh');
-        $limit =5;
-        $query = "SELECT * FROM books WHERE title LIKE '%$search%'  ORDER BY id Desc LIMIT $limit";
-   
-        $statement = $dbh->prepare($query);
-        $statement->execute();
+        $statement = $dbh->prepare("SELECT * FROM books WHERE title LIKE ?   ORDER BY id DESC LIMIT 5");
+        $statement->execute(['%'.$search.'%']);
         return $statement->fetchAll(PDO::FETCH_CLASS, 'Book');
     }
 
+    public function delete()
+    {
+        try {
+            $dbh = App::get('dbh');
+            $query = "DELETE FROM books WHERE id = :id";
+            $stmt = $dbh->prepare($query);
+            $stmt->bindParam(':id', $this->id);
+            $stmt->execute();
+            return true;
+        }
+        catch (PDOException $e) {
+            return $e->getMessage();
+        }
+
+    }
     
 
 }

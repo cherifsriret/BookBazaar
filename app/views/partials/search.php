@@ -10,62 +10,7 @@
             </a>
         </div>
     </div>
-
     <div id="bookSuggestions" class="p-0 mt-1" ></div>
-
-    <!--end of col-->
 </div>
 
 
-
-
-<script>
-    // Add event listener to the search input
-    document.querySelector('.search_input').addEventListener('input', function() {
-        // Get the search query
-        var query = this.value;
-
-        if (query.length < 1) {
-            document.querySelector('#bookSuggestions').innerHTML = '';
-            return;
-        }
-
-        // Make an AJAX request to fetch book suggestions
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', './search?query=' + query, true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                // Handle the response
-                var suggestions = JSON.parse(xhr.responseText);
-                var suggestionsHtml = '';
-
-
-                suggestions.forEach(function(suggestion) {
-                    suggestionsHtml += '<li class="suggestion py-1"> <a href="./book_details?id=' + suggestion.data + '">';
-                    suggestionsHtml += '<img src="' + suggestion.image + '" alt="' + suggestion.title + '">';
-                    suggestionsHtml += '<span>' + suggestion.title + '</span>';
-                    suggestionsHtml += '</a></li>';
-               
-
-
-                  //  suggestionsHtml += '<li class="suggestion"> <a href="./book_details?id='+suggestion.data+'">' + suggestion.value + '</a></li>';
-                });
-
-                suggestionsHtml = '<ul class="suggestions-list m-0">' + suggestionsHtml + '</ul>';
-
-                document.querySelector('#bookSuggestions').innerHTML = suggestionsHtml;
-
-            }
-        };
-        xhr.send();
-    });
-
-    document.querySelector('.search_input').addEventListener('blur', function() {
-       
-        setTimeout(() => {
-            this.value = '';
-            document.querySelector('#bookSuggestions').innerHTML = '';
-        }, 400);
-     
-    });
-</script>

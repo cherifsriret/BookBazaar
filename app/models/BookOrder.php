@@ -3,14 +3,19 @@
 /**
  * The BookOrder class
  */
-
 class BookOrder
 {
+
     private $id;
+
     private $order_id;
+
     private $book_id;
+
     private $qty;
+
     private $price;
+    
     private $book;
 
     public function getId()
@@ -96,6 +101,5 @@ class BookOrder
         $stmt->bindParam(':price', $this->price);
         $stmt->execute();
     }   
-
    
 }

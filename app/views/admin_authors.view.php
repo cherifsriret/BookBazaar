@@ -1,92 +1,88 @@
 <?php
-    $title = "Home";
+    $title = "Admin Authors Page";
     require('partials/header.php')
 ?>
 
 <main class="container">
 
-<h1 class="text-center m-5">Admin Authors Page</h1>
+  <h1 class="text-center m-5">Admin Authors Page</h1>
 
-<?php
-    require('partials/search.php')
-?>
+  <?php
+      require('partials/search.php')
+  ?>
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAuthor">
-  Add Author
-</button>
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAuthor">
+    Add Author
+  </button>
 
+  <table class="table mt-5">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    <?php foreach($authors as $author): ?>
+      <tr>
+        <th scope="row"><?=$author->getId() ?></th>
+        <td><?= $author->getName() ?></td>
+        <td>
+          <button type="button" class="btn btn-warning update-author" data-bs-toggle="modal" data-bs-target="#updateAuthor" data-id="<?= $author->getId() ?>" data-name="<?= $author->getName() ?>">Edit</button>
+          <button type="button" class="btn btn-danger delete-author" data-bs-toggle="modal" data-bs-target="#deleteAuthor" data-id="<?= $author->getId() ?>">Delete</button>
+        </td>
 
-<table class="table mt-5">
-  <thead>
-    <tr>
-      <th scope="col">Id</th>
-      <th scope="col">Name</th>
-      <th scope="col">Action</th>
-    </tr>
-  </thead>
-  <tbody>
-  <?php foreach($authors as $author): ?>
-    <tr>
-      <th scope="row"><?=$author->getId() ?></th>
-      <td><?= $author->getName() ?></td>
-      <td>
-        <button type="button" class="btn btn-warning update-author" data-bs-toggle="modal" data-bs-target="#updateAuthor" data-id="<?= $author->getId() ?>" data-name="<?= $author->getName() ?>">Edit</button>
-        <button type="button" class="btn btn-danger delete-author" data-bs-toggle="modal" data-bs-target="#deleteAuthor" data-id="<?= $author->getId() ?>">Delete</button>
-      </td>
-
-    </tr>
-    <?php endforeach; ?>
-  </tbody>
-</table>
-
+      </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
 
 
-<!-- Add pagination -->
-<nav aria-label="Page navigation">
-<ul class="pagination justify-content-center">
 
-<?php 
-$currentParams = $_GET;
-unset($currentParams['page']);
+  <!-- Add pagination -->
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
 
-foreach ($currentParams as $key => $value) {
-  $currentParams[$key] = urlencode($value);
-}
+      <?php 
+        $currentParams = $_GET;
+        unset($currentParams['page']);
 
-foreach ($currentParams as $key => $value) {
-  $currentParams[$key] = "$key=$value";
-}
+        foreach ($currentParams as $key => $value) {
+          $currentParams[$key] = urlencode($value);
+        }
 
-$currentParamsString = implode('&', $currentParams);
-?>
-<li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-  <a class="page-link" href="./admin_authors?page=1&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">First</a>
-</li>
-<li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-  <a class="page-link" href="./admin_authors?page=<?php echo $currentPage - 1; ?>&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">Previous</a>
-</li>
+        foreach ($currentParams as $key => $value) {
+          $currentParams[$key] = "$key=$value";
+        }
 
-<?php for ($i = max(1, $currentPage - 2); $i <= min($currentPage + 2, $totalPages); $i++): ?>
-  <li class="page-item <?php echo ($currentPage == $i) ? 'active' : ''; ?>">
-    <a class="page-link" href="./admin_authors?page=<?php echo $i; ?>&<?= $currentParamsString ?>"><?php echo $i; ?></a>
-  </li>
-<?php endfor; ?>
+        $currentParamsString = implode('&', $currentParams);
+      ?>
+      <li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
+        <a class="page-link" href="./admin_authors?page=1&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">First</a>
+      </li>
+      <li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
+        <a class="page-link" href="./admin_authors?page=<?php echo $currentPage - 1; ?>&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">Previous</a>
+      </li>
 
-<li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-  <a class="page-link" href="./admin_authors?page=<?php echo $currentPage + 1; ?>&<?= $currentParamsString ?>">Next</a>
-</li>
-<li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-  <a class="page-link" href="./admin_authors?page=<?php echo $totalPages; ?>&<?= $currentParamsString ?>">Last</a>
-</li>
+      <?php for ($i = max(1, $currentPage - 2); $i <= min($currentPage + 2, $totalPages); $i++): ?>
+        <li class="page-item <?php echo ($currentPage == $i) ? 'active' : ''; ?>">
+          <a class="page-link" href="./admin_authors?page=<?php echo $i; ?>&<?= $currentParamsString ?>"><?php echo $i; ?></a>
+        </li>
+      <?php endfor; ?>
 
-
+      <li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
+        <a class="page-link" href="./admin_authors?page=<?php echo $currentPage + 1; ?>&<?= $currentParamsString ?>">Next</a>
+      </li>
+      <li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
+        <a class="page-link" href="./admin_authors?page=<?php echo $totalPages; ?>&<?= $currentParamsString ?>">Last</a>
+      </li>
+    </ul>
+  </nav>
 </main>
 
-
 <!-- Modal -->
-
-
 
 <?php require('partials/footer.php') ?>
 
@@ -100,15 +96,11 @@ $currentParamsString = implode('&', $currentParams);
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        
-       
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" class="form-control" id="name" name="name" required>
 
             </div>
-      
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -163,7 +155,6 @@ $currentParamsString = implode('&', $currentParams);
 
 
 <!-- Delete author modal -->
-
 <div class="modal fade" id="deleteAuthor" tabindex="-1" aria-labelledby="deleteAuthorLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -183,7 +174,6 @@ $currentParamsString = implode('&', $currentParams);
       </form>
     </div>
   </div>
-
 </div>
 
 <script>

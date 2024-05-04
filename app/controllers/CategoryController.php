@@ -1,7 +1,10 @@
 <?php
+
 require_once "app/models/Category.php";
+
 class CategoryController
 {
+    
     public function index()
     {
         $categories = Category::fetchCategories($_GET['page'] ?? 1);
@@ -19,14 +22,17 @@ class CategoryController
                 $category->setName($name);
                 $category->create();
                 Helper::session('message', 'Created successfully');
-                Helper::redirect('admin_categories'); 
             }
             else
             {
                 Helper::session('error', "Category name  can't be empty.");
-                Helper::redirect('admin_categories'); 
             }
         }
+        else
+        {
+            Helper::session('error', 'Invalid request');
+        }
+        Helper::redirect('admin_categories'); 
     }
 
     public function update()
@@ -37,17 +43,26 @@ class CategoryController
             if(isset($id) && isset($name))
             {
                 $category = Category::find($id);
-                $category->setName($name);
-                $category->update();
-                Helper::session('message', 'Updated successfully');
-                Helper::redirect('admin_categories'); 
+                if(!$category){
+                    Helper::session('error', 'Category not found');
+                }
+                else
+                {
+                    $category->setName($name);
+                    $category->update();
+                    Helper::session('message', 'Updated successfully');
+                }
             }
             else
             {
                 Helper::session('error', "Category name can't be empty.");
-                Helper::redirect('admin_categories'); 
             }
         }
+        else
+        {
+            Helper::session('error', 'Invalid request');
+        }
+        Helper::redirect('admin_categories');
     }
 
     public function delete()
@@ -56,16 +71,24 @@ class CategoryController
             $id = $_POST['id'];
             $category = Category::find($id);
             if($category){
-                $category->delete();
-                Helper::session('message', 'Deleted successfully');
-                Helper::redirect('admin_categories'); 
+                $is_deleted = $category->delete();
+                if($is_deleted === true){
+                    Helper::session('message', 'Deleted successfully');
+                }
+                else
+                {
+                    Helper::session('error', "You can't delete this category.");
+                }
             }
             else
             {
                 Helper::session('error', 'Category not found');
-                Helper::redirect('admin_categories'); 
             }
         }
+        else
+        {
+            Helper::session('error', 'Invalid request');
+        }
+        Helper::redirect('admin_categories');
     }
-
 }

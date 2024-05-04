@@ -1,92 +1,91 @@
 <?php
-    $title = "Home";
+    $title = "Admin Categories Page";
     require('partials/header.php')
 ?>
 
 <main class="container">
 
-<h1 class="text-center m-5">Admin Categories Page</h1>
+  <h1 class="text-center m-5">Admin Categories Page</h1>
 
-<?php
-    require('partials/search.php')
-?>
+  <?php
+      require('partials/search.php')
+  ?>
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategory">
-  Add Category
-</button>
-
-
-<table class="table mt-5">
-  <thead>
-    <tr>
-      <th scope="col">Id</th>
-      <th scope="col">Name</th>
-      <th scope="col">Action</th>
-    </tr>
-  </thead>
-  <tbody>
-  <?php foreach($categories as $category): ?>
-    <tr>
-      <th scope="row"><?=$category->getId() ?></th>
-      <td><?= $category->getName() ?></td>
-      <td>
-        <button type="button" class="btn btn-warning update-category" data-bs-toggle="modal" data-bs-target="#updateCategory" data-id="<?= $category->getId() ?>" data-name="<?= $category->getName() ?>">Edit</button>
-        <button type="button" class="btn btn-danger delete-category" data-bs-toggle="modal" data-bs-target="#deleteCategory" data-id="<?= $category->getId() ?>">Delete</button>
-      </td>
-
-    </tr>
-    <?php endforeach; ?>
-  </tbody>
-</table>
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategory">
+    Add Category
+  </button>
 
 
+  <table class="table mt-5">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Name</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    <?php foreach($categories as $category): ?>
+      <tr>
+        <th scope="row"><?=$category->getId() ?></th>
+        <td><?= $category->getName() ?></td>
+        <td>
+          <button type="button" class="btn btn-warning update-category" data-bs-toggle="modal" data-bs-target="#updateCategory" data-id="<?= $category->getId() ?>" data-name="<?= $category->getName() ?>">Edit</button>
+          <button type="button" class="btn btn-danger delete-category" data-bs-toggle="modal" data-bs-target="#deleteCategory" data-id="<?= $category->getId() ?>">Delete</button>
+        </td>
 
-<!-- Add pagination -->
-<nav aria-label="Page navigation">
-<ul class="pagination justify-content-center">
-
-<?php 
-$currentParams = $_GET;
-unset($currentParams['page']);
-
-foreach ($currentParams as $key => $value) {
-  $currentParams[$key] = urlencode($value);
-}
-
-foreach ($currentParams as $key => $value) {
-  $currentParams[$key] = "$key=$value";
-}
-
-$currentParamsString = implode('&', $currentParams);
-?>
-<li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-  <a class="page-link" href="./admin_categories?page=1&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">First</a>
-</li>
-<li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-  <a class="page-link" href="./admin_categories?page=<?php echo $currentPage - 1; ?>&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">Previous</a>
-</li>
-
-<?php for ($i = max(1, $currentPage - 2); $i <= min($currentPage + 2, $totalPages); $i++): ?>
-  <li class="page-item <?php echo ($currentPage == $i) ? 'active' : ''; ?>">
-    <a class="page-link" href="./admin_categories?page=<?php echo $i; ?>&<?= $currentParamsString ?>"><?php echo $i; ?></a>
-  </li>
-<?php endfor; ?>
-
-<li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-  <a class="page-link" href="./admin_categories?page=<?php echo $currentPage + 1; ?>&<?= $currentParamsString ?>">Next</a>
-</li>
-<li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-  <a class="page-link" href="./admin_categories?page=<?php echo $totalPages; ?>&<?= $currentParamsString ?>">Last</a>
-</li>
+      </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
 
 
+
+  <!-- Add pagination -->
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+
+    <?php 
+    $currentParams = $_GET;
+    unset($currentParams['page']);
+
+    foreach ($currentParams as $key => $value) {
+      $currentParams[$key] = urlencode($value);
+    }
+
+    foreach ($currentParams as $key => $value) {
+      $currentParams[$key] = "$key=$value";
+    }
+
+    $currentParamsString = implode('&', $currentParams);
+    ?>
+    <li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
+      <a class="page-link" href="./admin_categories?page=1&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">First</a>
+    </li>
+    <li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
+      <a class="page-link" href="./admin_categories?page=<?php echo $currentPage - 1; ?>&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">Previous</a>
+    </li>
+
+    <?php for ($i = max(1, $currentPage - 2); $i <= min($currentPage + 2, $totalPages); $i++): ?>
+      <li class="page-item <?php echo ($currentPage == $i) ? 'active' : ''; ?>">
+        <a class="page-link" href="./admin_categories?page=<?php echo $i; ?>&<?= $currentParamsString ?>"><?php echo $i; ?></a>
+      </li>
+    <?php endfor; ?>
+
+    <li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
+      <a class="page-link" href="./admin_categories?page=<?php echo $currentPage + 1; ?>&<?= $currentParamsString ?>">Next</a>
+    </li>
+    <li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
+      <a class="page-link" href="./admin_categories?page=<?php echo $totalPages; ?>&<?= $currentParamsString ?>">Last</a>
+    </li>
+
+    </ul>
+  </nav>
 </main>
 
 
 <!-- Modal -->
-
-
 
 <?php require('partials/footer.php') ?>
 
@@ -100,15 +99,10 @@ $currentParamsString = implode('&', $currentParams);
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        
-       
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
-
-            </div>
-      
-
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
