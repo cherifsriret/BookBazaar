@@ -2,139 +2,27 @@
 /**
 * The Book class
 */
-class Book
-{
+require_once "core/database/Model.php";
+
+class Book extends Model {
 
     // Attributes
-    private $id;
-
-	private $isbn;
-
-	private $title;
-
-	private $image;
-
-    private $price;
-
-    private $author_id;
-
-    private $author;
-
-    private $category_id;
-
-    private $category;
-
-    private $is_featured;
-
-    // Getters and Setters
-    public function getId()
-	{
-		return $this->id;
-	}
-
-    public function setId($value)
-    {
-        $this->id = $value;
-    }
-
-    public function getIsbn()
-    {
-        return $this->isbn;
-    }
-
-    public function setIsbn($value)
-    {
-        $this->isbn = $value;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function setTitle($value)
-    {
-        $this->title = $value;
-    }
-
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    public function setImage($value)
-    {
-        $this->image = $value;
-    }
-
-    public function getPrice()
-    {
-        return $this->price;
-    }
-    
-    public function setPrice($value)
-    {
-        $this->price = $value;
-    }
-
-    public function getAuthorId()
-    {
-        return $this->author_id;
-    }
-
-    public function setAuthorId($value)
-    {
-        $this->author_id = $value;
-    }
-
-    public function getAuthor()
-    {
-        return $this->author;
-    }
-
-    public function setAuthor($value)
-    {
-        $this->author = $value;
-    }
-
-    public function getCategoryId()
-    {
-        return $this->category_id;
-    }
-
-    public function setCategoryId($value)
-    {
-        $this->category_id = $value;
-    }
-
-    public function getCategory()
-    {
-        return $this->category;
-    }
-
-    public function setCategory($value)
-    {
-        $this->category = $value;
-    }
-
-    public function getIsFeatured()
-    {
-        return $this->is_featured;
-    }
-
-    public function setIsFeatured($value)
-    {
-        $this->is_featured = $value;
-    }
+    protected $id;
+	protected $isbn;
+	protected $title;
+	protected $image;
+    protected $price;
+    protected $author_id;
+    protected $category_id;
+    protected $is_featured;
 
     // Methods
 
-    public static function fetchAll($page = 1, $author = null, $category = null)
+    public static function fetchAll( $author = null, $category = null,$page = 1, $limit = 12)
     {
         $dbh = App::get('dbh');
-        $limit = 12;
         $offset = ($page - 1) * $limit;
-        $query = "SELECT * FROM books WHERE 1 = 1";
+        $query = "SELECT * FROM book WHERE 1 = 1";
 
         if ($author != null) {
             $query .= " AND author_id = :author";
@@ -161,11 +49,10 @@ class Book
 
     }
 
-    public static function BooksPageCount($page = 1, $author = null, $category = null){
+    public static function BooksPageCount( $author = null, $category = null,$limit = 12){
         $dbh = App::get('dbh');
-        $limit = 12;
 
-        $query = "SELECT COUNT(*) as count FROM books";
+        $query = "SELECT COUNT(*) as count FROM book";
 
         if ($author != null && $category != null) {
             $query .= " WHERE author_id = :author AND category_id = :category";
@@ -192,142 +79,75 @@ class Book
         return ceil($total /  $limit);
     }
     
-    public static function latestBooks( ){
+    public static function latestBooks( $limit =4 ){
         $dbh = App::get('dbh');
-        $limit =4;
-        $statement = $dbh->prepare("SELECT * FROM books ORDER BY id Desc LIMIT $limit");
+        $statement = $dbh->prepare("SELECT * FROM book ORDER BY id Desc LIMIT  :limit");
+        $statement->bindParam(':limit', $limit, PDO::PARAM_INT);
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_CLASS, 'Book');
 
     }
 
-    public static function featuredBooks( ){
+    public static function featuredBooks($limit =4 ){
         $dbh = App::get('dbh');
-        $limit =4;
-        $statement = $dbh->prepare("SELECT * FROM books WHERE is_featured = 1 ORDER BY id Desc LIMIT $limit");
+        $statement = $dbh->prepare("SELECT * FROM book WHERE is_featured = 1 ORDER BY id Desc LIMIT  :limit");
+        $statement->bindParam(':limit', $limit, PDO::PARAM_INT); 
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_CLASS, 'Book');
 
     }
 
-    public static function mostSellerBooks( ){
+    public static function mostSellerBooks( $limit =4 ){
         $dbh = App::get('dbh');
-        $limit =4;
+       
 
-        $statement = $dbh->prepare("SELECT books.*, SUM(book_orders.qty) AS total_quantity
-                                    FROM books
-                                    INNER JOIN book_orders ON books.id = book_orders.book_id
-                                    INNER JOIN orders ON book_orders.order_id = orders.id
+        $statement = $dbh->prepare("SELECT book.*, SUM(bookorder.qty) AS total_quantity
+                                    FROM book
+                                    INNER JOIN bookorder ON book.id = bookorder.book_id
+                                    INNER JOIN orders ON bookorder.order_id = orders.id
                                     WHERE orders.status = 'Delivered'
-                                    GROUP BY books.id
+                                    GROUP BY book.id
                                     ORDER BY total_quantity DESC
-                                    LIMIT $limit");
+                                    LIMIT :limit");
+        $statement->bindParam(':limit', $limit, PDO::PARAM_INT);
        
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_CLASS, 'Book');
 
     }
 
-    public static function mostSellBooks( ){
-        $dbh = App::get('dbh');
-        $limit =4;
-        $statement = $dbh->prepare("SELECT * FROM books ORDER BY id Desc LIMIT $limit");
-        $statement->execute();
-        return $statement->fetchAll(PDO::FETCH_CLASS, 'Book');
-
-    }   
-
-    public static function fetchId($id)
-    {
-        $dbh = App::get('dbh');
-        $statement = $dbh->prepare("SELECT * FROM books WHERE id = ?");
-        $statement->setFetchMode(PDO::FETCH_CLASS, 'Book');
-        $statement->execute([$id]);
-        return $statement->fetch();
-    }
-
-    public static function fetchSameAuthor($author_id, $book_id)
-    {
-        $dbh = App::get('dbh');
-        $limit = 8;
-        $statement = $dbh->prepare("SELECT * FROM books WHERE author_id = ? AND id != ? ORDER BY id DESC LIMIT $limit");
-        $statement->execute([$author_id, $book_id]);
-        return $statement->fetchAll(PDO::FETCH_CLASS, 'Book');
-    }
-
-    public static function fetchSameCategory($category_id, $book_id)
-    {
-        $dbh = App::get('dbh');
-        $limit = 8;
-        $statement = $dbh->prepare("SELECT * FROM books WHERE category_id = ? AND id != ? ORDER BY id DESC LIMIT $limit");
-        $statement->execute([$category_id, $book_id]);
-        return $statement->fetchAll(PDO::FETCH_CLASS, 'Book');
-    }
-
-    public function update()
+    public static function fetchSameAuthor($author_id, $book_id,$limit = 8)
     {
         $dbh = App::get('dbh');
 
-        // prepared statement with question mark placeholders (marqueurs de positionnement)
-        $req = "UPDATE books SET title = ?, isbn = ?, image = ?, author_id = ?, category_id = ?, price = ? , is_featured = ? WHERE id = ?";
-
-        $statement = $dbh->prepare($req);
-        $statement->bindParam(1, $this->title, PDO::PARAM_STR);
-        $statement->bindParam(2, $this->isbn, PDO::PARAM_STR);
-        $statement->bindParam(3, $this->image, PDO::PARAM_STR);
-        $statement->bindParam(4, $this->author_id, PDO::PARAM_INT);
-        $statement->bindParam(5, $this->category_id, PDO::PARAM_INT);
-        $statement->bindParam(6, $this->price, PDO::PARAM_INT);
-        $statement->bindParam(7, $this->is_featured, PDO::PARAM_BOOL);
-        $statement->bindParam(8, $this->id, PDO::PARAM_INT);
-        // use exec() because no results are returned
-        $statement->execute();
+        $query = "SELECT * FROM book WHERE author_id = :author_id AND id != :book_id  ORDER BY id DESC LIMIT :limit";
+        $stmt = $dbh->prepare($query);
+        $stmt->bindParam(':author_id', $author_id, PDO::PARAM_INT);
+        $stmt->bindParam(':book_id', $book_id, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_CLASS, 'Book');
     }
 
-    public function create()
+    public static function fetchSameCategory($category_id, $book_id,$limit = 8)
     {
         $dbh = App::get('dbh');
 
-        // prepared statement with question mark placeholders (marqueurs de positionnement)
-        $req = "INSERT INTO books (isbn, title, image, price , author_id, category_id , is_featured) VALUES (?, ?, ?,?, ?, ? , ?)";
-
-        $statement = $dbh->prepare($req);
-        $statement->bindParam(1, $this->isbn, PDO::PARAM_STR);
-        $statement->bindParam(2, $this->title, PDO::PARAM_STR);
-        $statement->bindParam(3, $this->image, PDO::PARAM_STR);
-        $statement->bindParam(4, $this->price, PDO::PARAM_INT);
-        $statement->bindParam(5, $this->author_id, PDO::PARAM_INT);
-        $statement->bindParam(6, $this->category_id, PDO::PARAM_INT);
-        $statement->bindParam(7, $this->is_featured, PDO::PARAM_BOOL);
-
-        // use exec() because no results are returned
-        $statement->execute();
+        $query = "SELECT * FROM book WHERE category_id = :category_id AND id != :book_id  ORDER BY id DESC LIMIT :limit";
+        $stmt = $dbh->prepare($query);
+        $stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
+        $stmt->bindParam(':book_id', $book_id, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_CLASS, 'Book');
     }
-
 
     public static function search($search)
     {
         $dbh = App::get('dbh');
-        $statement = $dbh->prepare("SELECT * FROM books WHERE title LIKE ?   ORDER BY id DESC LIMIT 5");
+        $statement = $dbh->prepare("SELECT * FROM book WHERE title LIKE ?   ORDER BY id DESC LIMIT 5");
         $statement->execute(['%'.$search.'%']);
         return $statement->fetchAll(PDO::FETCH_CLASS, 'Book');
     }
-
-    public function delete()
-    {
-        try {
-            $dbh = App::get('dbh');
-            $query = "DELETE FROM books WHERE id = :id";
-            $stmt = $dbh->prepare($query);
-            $stmt->bindParam(':id', $this->id);
-            $stmt->execute();
-            return true;
-        }
-        catch (PDOException $e) {
-            return $e->getMessage();
-        }
-
-    }
-    
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-require_once "app/models/Order.php";
+require_once "app/models/Orders.php";
 require_once "app/models/BookOrder.php";
 require_once "app/models/BookCart.php";
 require_once "app/models/Book.php";
@@ -34,9 +34,9 @@ class CartController
                 }
                 else {
                     $cart = new BookCart();
-                    $cart->setBookId($book->getId());
-                    $cart->setQty($_POST['qty']);
-                    $cart->setUserId($_SESSION['user']['id']);
+                    $cart->book_id = $book->id;
+                    $cart->qty = $_POST['qty'];
+                    $cart->user_id = $_SESSION['user']['id'];
                     $cart->create();
                     BookCart::setCurrentCartUser( $_SESSION['user']['id']);
                     Helper::redirect('cart');
@@ -80,6 +80,7 @@ class CartController
 
     public function update_cart()
     {
+      
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           
             $cart = BookCart::fetchId($_POST['id']);
@@ -90,7 +91,7 @@ class CartController
                 return;
             }
            
-            $cart->setQty($_POST['qty']);
+            $cart->qty = $_POST['qty'];
             $cart->update();
             BookCart::setCurrentCartUser( $_SESSION['user']['id']);
             //return ajax response success
@@ -126,39 +127,40 @@ class CartController
                 Helper::redirect('cart');
             }
             foreach ($cart_books as $cart_book) {
-                $book = Book::fetchId($cart_book->getBookId());
-                If(!$book)
+                $book = Book::fetchId($cart_book->book_id);
+                if(!$book)
                 {
                     Helper::session('error', 'Book not found');
                     Helper::redirect('');
                 }
-                $cart_book->setBook($book);
+                $cart_book->book = $book;
             }
             $total = 0;
             foreach ($cart_books as $cart_book) {
-                $total += $cart_book->getBook()->getPrice() * $cart_book->getQty();
+                $total += $cart_book->book->price * $cart_book->qty;
             }
-            $order = new Order();
-            $order->setUserId($current_user);
-            $order->setTotal($total);
-            $order->setStatus('pending');
-            $order->setFirstName($_POST['first_name']);
-            $order->setLastName($_POST['last_name']);
-            $order->setEmail($_POST['email']);
-            $order->setPhone($_POST['last_name']);
-            $order->setAddress($_POST['address']);
-            $order->setDateOrder(date('Y-m-d H:i:s'));
-            $order->setCity($_POST['city']);
-            $order->setState($_POST['state']);
-            $order->setZipCode($_POST['zip']);
-         
+
+            $order = new Orders();
+            $order->user_id = $current_user;
+           // $order->total = $total;
+            $order->status = 'pending';
+            $order->first_name = $_POST['first_name'];
+            $order->last_name = $_POST['last_name'];
+            $order->email = $_POST['email'];
+            $order->phone = $_POST['last_name'];
+            $order->address = $_POST['address'];
+            $order->dateOrder = date('Y-m-d H:i:s');
+            $order->city = $_POST['city'];
+            $order->state = $_POST['state'];
+            $order->zip_code = $_POST['zip'];
             $order->create();
+
             foreach ($cart_books as $cart_book) {
                 $book_order = new BookOrder();
-                $book_order->setOrderId($order->getId());
-                $book_order->setBookId($cart_book->getBookId());
-                $book_order->setQty($cart_book->getQty());
-                $book_order->setPrice($cart_book->getBook()->getPrice());
+                $book_order->order_id = $order->id;
+                $book_order->book_id = $cart_book->book_id;
+                $book_order->qty = $cart_book->qty;
+                $book_order->price = $cart_book->book->price;
                 $book_order->create();
                 $cart_book->delete();
             }

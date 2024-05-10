@@ -25,61 +25,21 @@
     <tbody>
     <?php foreach($orders as $order): ?>
       <tr>
-        <th scope="row"><?=$order->getId() ?></th>
-        <td><?= $order->getDateOrder() ?> </td>
-        <td><?= $order->getUser()->getFirstName() ?> <?= $order->getUser()->getLastName() ?> </td>
-        <td><?= $order->getTotal() ?>€</td>
-        <td><?= $order->getStatus() ?></td>
+        <th scope="row"><?= urlencode($order->id) ?></th>
+        <td><?= htmlentities($order->dateOrder) ?></td>
+        <td><?= htmlentities($order->user->first_name) ?> <?= htmlentities($order->user->last_name) ?></td>
+        <td><?= htmlentities($order->total) ?>€</td>
+        <td><?= htmlentities($order->status) ?></td>
         <td>
-          <a href="./admin_order_details?id=<?= $order->getId() ?>" class="btn btn-primary">Show</a>
+          <a href="./admin_order_details?id=<?= urlencode($order->id) ?>" class="btn btn-primary">Show</a>
         </td>
-
       </tr>
       <?php endforeach; ?>
     </tbody>
   </table>
 
-
-
   <!-- Add pagination -->
-  <nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-
-      <?php 
-      $currentParams = $_GET;
-      unset($currentParams['page']);
-
-      foreach ($currentParams as $key => $value) {
-        $currentParams[$key] = urlencode($value);
-      }
-
-      foreach ($currentParams as $key => $value) {
-        $currentParams[$key] = "$key=$value";
-      }
-
-      $currentParamsString = implode('&', $currentParams);
-      ?>
-      <li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./orders?page=1&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">First</a>
-      </li>
-      <li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./orders?page=<?php echo $currentPage - 1; ?>&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">Previous</a>
-      </li>
-
-      <?php for ($i = max(1, $currentPage - 2); $i <= min($currentPage + 2, $totalPages); $i++): ?>
-        <li class="page-item <?php echo ($currentPage == $i) ? 'active' : ''; ?>">
-          <a class="page-link" href="./orders?page=<?php echo $i; ?>&<?= $currentParamsString ?>"><?php echo $i; ?></a>
-        </li>
-      <?php endfor; ?>
-
-      <li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./orders?page=<?php echo $currentPage + 1; ?>&<?= $currentParamsString ?>">Next</a>
-      </li>
-      <li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./orders?page=<?php echo $totalPages; ?>&<?= $currentParamsString ?>">Last</a>
-      </li>
-    </ul>
-  </nav>
+  <?php require('partials/pagination.php') ?>
 
 </main>
 

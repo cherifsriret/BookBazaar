@@ -11,8 +11,8 @@ class BookController
     {
         $books = Book::fetchAll($_GET['page'] ?? 1);
         foreach($books as $book){
-            $book->setAuthor(Author::find($book->getAuthorId()));
-            $book->setCategory(Category::find($book->getCategoryId()));
+            $book->author = Author::fetchId($book->author_id);
+            $book->category = Category::fetchId($book->category_id);
         }
         $books_page_count = Book::BooksPageCount($_GET['page'] ?? 1);
         return Helper::view("admin_books", ['books' => $books ,'currentPage' => $_GET['page'] ?? 1 , 'totalPages' => $books_page_count]);
@@ -38,13 +38,13 @@ class BookController
             if(isset($title) && isset($author_id) && isset( $category_id) && isset($price) && isset($image) && isset($is_featured) && isset($isbn))
             {
                 $book = new Book();
-                $book->setTitle($title);
-                $book->setAuthorId($author_id);
-                $book->setCategoryId($category_id);
-                $book->setPrice($price);
-                $book->setImage($image);
-                $book->setIsbn($isbn);
-                $book->setIsFeatured($is_featured);
+                $book->title = $title;
+                $book->author_id = $author_id;
+                $book->category_id = $category_id;
+                $book->price = $price;
+                $book->image = $image;
+                $book->isbn = $isbn;
+                $book->is_featured = $is_featured;
                 $book->create();
                 Helper::session('message', 'Created successfully');
             }
@@ -89,13 +89,13 @@ class BookController
                 }
                 else
                 {
-                    $book->setTitle($title);
-                    $book->setAuthorId($author_id);
-                    $book->setCategoryId($category_id);
-                    $book->setPrice($price);
-                    $book->setImage($image);
-                    $book->setIsbn($isbn);
-                    $book->setIsFeatured($is_featured);
+                    $book->title = $title;
+                    $book->author_id = $author_id;
+                    $book->category_id = $category_id;
+                    $book->price = $price;
+                    $book->image = $image;
+                    $book->isbn = $isbn;
+                    $book->is_featured = $is_featured;
                     $book->update();
                     Helper::session('message', 'Updated successfully');
                 }

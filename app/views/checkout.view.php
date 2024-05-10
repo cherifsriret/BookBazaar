@@ -81,12 +81,12 @@
           <p>No items in cart</p>
         <?php else: ?>
           <?php foreach($cart_books  as $cart_book): 
-            $total_cart += $cart_book->getBook()->getPrice() * $cart_book->getQty();
+            $total_cart += htmlentities($cart_book->book->price)  * htmlentities($cart_book->qty);
             ?>
             <div class="d-flex justify-content-between">
-              <img src="<?= $cart_book->getBook()->getImage() ?>" alt="" height= 50>
-              <span><?= $cart_book->getBook()->getTitle() ?></span>
-              <span><?= $cart_book->getQty() ?>*<?= $cart_book->getBook()->getPrice() ?>€</span>
+              <img src="<?= htmlentities($cart_book->book->image) ?>" alt="" height= 50>
+              <span><?= htmlentities($cart_book->book->title) ?></span>
+              <span><?= htmlentities($cart_book->qty) ?>*<?= htmlentities($cart_book->book->price) ?>€</span>
             </div>
           <?php endforeach; ?>
         <?php endif; ?>
@@ -96,7 +96,7 @@
             <tbody>
               <tr>
                   <td>Subtotal</td>
-                  <td class="subtotal"><?= $total_cart ?>€ </td>
+                  <td class="subtotal"><?= htmlentities($total_cart) ?>€ </td>
               </tr>
               <tr>
                   <td>Shipping</td>
@@ -104,7 +104,7 @@
               </tr>
               <tr class="total-row">
                   <td>Total</td>
-                  <td class="price-total"><?= $total_cart ?>€</td>
+                  <td class="price-total"><?= htmlentities($total_cart) ?>€</td>
               </tr>
             </tbody>
         </table>

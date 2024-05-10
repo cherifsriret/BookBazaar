@@ -27,16 +27,16 @@
     <tbody>
     <?php foreach($users as $user): ?>
       <tr>
-        <th scope="row"><?=$user->getId() ?></th>
-        <td><?= $user->getFirstName() ?></td>
-        <td><?= $user->getLastName() ?></td>
-        <td><?= $user->getEmail() ?></td>
-        <td><?= $user->getPhone() ?></td>
-        <td><?= $user->getRole() ?></td>
+        <th scope="row"><?=$user->id ?></th>
+        <td><?= $user->first_name ?></td>
+        <td><?= $user->last_name ?></td>
+        <td><?= $user->email ?></td>
+        <td><?= $user->phone ?></td>
+        <td><?= $user->role ?></td>
         <td></td>
         <td>
-          <a href="./user_edit?id=<?= $user->getId() ?>" class="btn btn-primary">Edit</a>
-          <a href="./user_delete?id=<?= $user->getId() ?>" class="btn btn-danger">Delete</a>
+          <a href="./user_edit?id=<?= $user->id ?>" class="btn btn-primary">Edit</a>
+          <a href="./user_delete?id=<?= $user->id ?>" class="btn btn-danger">Delete</a>
         </td>
 
       </tr>
@@ -44,48 +44,8 @@
     </tbody>
   </table>
 
-
-
   <!-- Add pagination -->
-  <nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-
-      <?php 
-      $currentParams = $_GET;
-      unset($currentParams['page']);
-
-      foreach ($currentParams as $key => $value) {
-        $currentParams[$key] = urlencode($value);
-      }
-
-      foreach ($currentParams as $key => $value) {
-        $currentParams[$key] = "$key=$value";
-      }
-
-      $currentParamsString = implode('&', $currentParams);
-      ?>
-      <li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./admin_users?page=1&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">First</a>
-      </li>
-      <li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./admin_users?page=<?php echo $currentPage - 1; ?>&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">Previous</a>
-      </li>
-
-      <?php for ($i = max(1, $currentPage - 2); $i <= min($currentPage + 2, $totalPages); $i++): ?>
-        <li class="page-item <?php echo ($currentPage == $i) ? 'active' : ''; ?>">
-          <a class="page-link" href="./admin_users?page=<?php echo $i; ?>&<?= $currentParamsString ?>"><?php echo $i; ?></a>
-        </li>
-      <?php endfor; ?>
-
-      <li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./admin_users?page=<?php echo $currentPage + 1; ?>&<?= $currentParamsString ?>">Next</a>
-      </li>
-      <li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./admin_users?page=<?php echo $totalPages; ?>&<?= $currentParamsString ?>">Last</a>
-      </li>
-
-    </ul>
-  </nav>
+  <?php require('partials/pagination.php') ?>
 
 </main>
 

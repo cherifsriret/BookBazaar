@@ -3,45 +3,15 @@
 /**
  * The Wishlist class
  */
+require_once "core/database/Model.php";
 
-class Wishlist
-{
+class Wishlist extends Model {
 
-    private $id;
+    protected $id;
 
-    private $user_id;
+    protected $user_id;
 
-    private $book_id;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setId($value)
-    {
-        $this->id = $value;
-    }
-
-    public function getUserId()
-    {
-        return $this->user_id;
-    }
-
-    public function setUserId($value)
-    {
-        $this->user_id = $value;
-    }
-
-    public function getBookId()
-    {
-        return $this->book_id;
-    }
-
-    public function setBookId($value)
-    {
-        $this->book_id = $value;
-    }
+    protected $book_id;
 
 
     public function isWislisted($bookId, $userId)
@@ -64,9 +34,8 @@ class Wishlist
     public function create()
     {
 
-
-        $user_id = $this->getUserId();
-        $book_id = $this->getBookId();
+        $user_id = $this->user_id;
+        $book_id = $this->book_id;
          $dbh = App::get('dbh');
         //check if the book is already in the cart then update the qty else insert a new record
         $query = "SELECT * FROM wishlist WHERE user_id = :user_id AND book_id = :book_id";

@@ -6,9 +6,9 @@ class AuthorController
     
     public function index()
     {
-        $authors = Author::fetchAuthors($_GET['page'] ?? 1);
-        $authors_page_count = Author::AuthorsPageCount($_GET['page'] ?? 1);
-        return Helper::view("admin_authors", ['authors' => $authors ,'currentPage' => $_GET['page'] ?? 1 , 'totalPages' => $authors_page_count]);
+        $authors = Author::fetchAuthors($_GET['page'] ?? 1, 15);
+        $authors_page_count = Author::AuthorsPageCount( 15);
+        return Helper::view("admin_authors", ['authors' => $authors ,'current_url' => 'admin_authors','currentPage' => $_GET['page'] ?? 1 , 'totalPages' => $authors_page_count]);
     }
 
     public function create()
@@ -18,7 +18,7 @@ class AuthorController
             if(isset($name))
             {
                 $author = new Author();
-                $author->setName($name);
+                $author->name = $name;
                 $author->create();
                 Helper::session('message', 'Created successfully');
             }
@@ -41,13 +41,13 @@ class AuthorController
             $name = $_POST['name'];
             if(isset($id) && isset($name))
             {
-                $author = Author::find($id);
+                $author = Author::fetchId($id);
                 if(!$author){
                     Helper::session('error', 'Author not found');
                 }
                 else
                 {
-                    $author->setName($name);
+                    $author->name = $name;
                     $author->update();
                     Helper::session('message', 'Updated successfully');
                 }
@@ -68,7 +68,7 @@ class AuthorController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
-            $author = Author::find($id);
+            $author = Author::fetchId($id);
             if($author){
                 $is_deleted = $author->delete();
                 if($is_deleted === true){

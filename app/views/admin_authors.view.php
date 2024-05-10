@@ -27,13 +27,12 @@
     <tbody>
     <?php foreach($authors as $author): ?>
       <tr>
-        <th scope="row"><?=$author->getId() ?></th>
-        <td><?= $author->getName() ?></td>
+        <th scope="row"><?= urlencode($author->id) ?></th>
+        <td><?= htmlentities($author->name) ?></td>
         <td>
-          <button type="button" class="btn btn-warning update-author" data-bs-toggle="modal" data-bs-target="#updateAuthor" data-id="<?= $author->getId() ?>" data-name="<?= $author->getName() ?>">Edit</button>
-          <button type="button" class="btn btn-danger delete-author" data-bs-toggle="modal" data-bs-target="#deleteAuthor" data-id="<?= $author->getId() ?>">Delete</button>
+          <button type="button" class="btn btn-warning update-author" data-bs-toggle="modal" data-bs-target="#updateAuthor" data-id="<?= urlencode($author->id) ?>" data-name="<?= htmlentities($author->name) ?>">Edit</button>
+          <button type="button" class="btn btn-danger delete-author" data-bs-toggle="modal" data-bs-target="#deleteAuthor" data-id="<?= urlencode($author->id) ?>">Delete</button>
         </td>
-
       </tr>
       <?php endforeach; ?>
     </tbody>
@@ -42,44 +41,8 @@
 
 
   <!-- Add pagination -->
-  <nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
+  <?php require('partials/pagination.php') ?>
 
-      <?php 
-        $currentParams = $_GET;
-        unset($currentParams['page']);
-
-        foreach ($currentParams as $key => $value) {
-          $currentParams[$key] = urlencode($value);
-        }
-
-        foreach ($currentParams as $key => $value) {
-          $currentParams[$key] = "$key=$value";
-        }
-
-        $currentParamsString = implode('&', $currentParams);
-      ?>
-      <li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./admin_authors?page=1&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">First</a>
-      </li>
-      <li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./admin_authors?page=<?php echo $currentPage - 1; ?>&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">Previous</a>
-      </li>
-
-      <?php for ($i = max(1, $currentPage - 2); $i <= min($currentPage + 2, $totalPages); $i++): ?>
-        <li class="page-item <?php echo ($currentPage == $i) ? 'active' : ''; ?>">
-          <a class="page-link" href="./admin_authors?page=<?php echo $i; ?>&<?= $currentParamsString ?>"><?php echo $i; ?></a>
-        </li>
-      <?php endfor; ?>
-
-      <li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./admin_authors?page=<?php echo $currentPage + 1; ?>&<?= $currentParamsString ?>">Next</a>
-      </li>
-      <li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./admin_authors?page=<?php echo $totalPages; ?>&<?= $currentParamsString ?>">Last</a>
-      </li>
-    </ul>
-  </nav>
 </main>
 
 <!-- Modal -->
@@ -99,7 +62,6 @@
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" class="form-control" id="name" name="name" required>
-
             </div>
       </div>
       <div class="modal-footer">
@@ -135,18 +97,17 @@
       </form>
     </div>
   </div>
-
 </div>
 
 <script>
-  var updateAuthorModal = document.getElementById('updateAuthor')
+  let updateAuthorModal = document.getElementById('updateAuthor')
   updateAuthorModal.addEventListener('show.bs.modal', function (event) {
-    var button = event.relatedTarget
-    var id = button.getAttribute('data-id')
-    var name = button.getAttribute('data-name')
-    var modalTitle = updateAuthorModal.querySelector('.modal-title')
-    var nameInput = updateAuthorModal.querySelector('#name')
-    var idInput = updateAuthorModal.querySelector('#update_author_id')
+    let button = event.relatedTarget
+    let id = button.getAttribute('data-id')
+    let name = button.getAttribute('data-name')
+    let modalTitle = updateAuthorModal.querySelector('.modal-title')
+    let nameInput = updateAuthorModal.querySelector('#name')
+    let idInput = updateAuthorModal.querySelector('#update_author_id')
     modalTitle.textContent = 'Update Author'
     nameInput.value = name
     idInput.value = id
@@ -177,12 +138,12 @@
 </div>
 
 <script>
-  var deleteAuthorModal = document.getElementById('deleteAuthor')
+  let deleteAuthorModal = document.getElementById('deleteAuthor')
   deleteAuthorModal.addEventListener('show.bs.modal', function (event) {
-    var button = event.relatedTarget
-    var id = button.getAttribute('data-id')
-    var modalTitle = deleteAuthorModal.querySelector('.modal-title')
-    var idInput = deleteAuthorModal.querySelector('#delete_author_id')
+    let button = event.relatedTarget
+    let id = button.getAttribute('data-id')
+    let modalTitle = deleteAuthorModal.querySelector('.modal-title')
+    let idInput = deleteAuthorModal.querySelector('#delete_author_id')
     modalTitle.textContent = 'Delete Author'
     idInput.value = id
   })

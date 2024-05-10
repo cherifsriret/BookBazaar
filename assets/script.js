@@ -1,15 +1,15 @@
 
-var inputQty = document.querySelectorAll('.cart-qty');
+let inputQty = document.querySelectorAll('.cart-qty');
 inputQty.forEach(function(btn) {
 
     btn.addEventListener('change', function() {
-        var newQty = this.value;
-        var id = this.getAttribute('data-id');
+        let newQty = this.value;
+        let id = this.getAttribute('data-id');
         
         // Make an AJAX request to update the database
-        var xhr = new XMLHttpRequest();
+        let xhr = new XMLHttpRequest();
         xhr.open('POST', './update_cart');
-        var formData = new FormData();
+        let formData = new FormData();
         
         // Add data to FormData object
         formData.append("qty", newQty);
@@ -30,14 +30,14 @@ inputQty.forEach(function(btn) {
     });
 });
 
-var removeBtns = document.querySelectorAll('.cart-remove');
+let removeBtns = document.querySelectorAll('.cart-remove');
 removeBtns.forEach(function(btn) {
     btn.addEventListener('click', function() {
-        var id = this.getAttribute('data-id');
+        let id = this.getAttribute('data-id');
         // Make an AJAX request to update the database
-        var xhr = new XMLHttpRequest();
+        let xhr = new XMLHttpRequest();
         xhr.open('POST', './remove_from_cart');
-        var formData = new FormData();
+        let formData = new FormData();
         
         // Add data to FormData object
         formData.append("id", id);
@@ -58,43 +58,78 @@ removeBtns.forEach(function(btn) {
 });
 
 // search bar script
-// Add event listener to the search input
+
+document.querySelector('.search_input').addEventListener('blur', function(e) {
+    let searchContainer = this.closest('.search-box');
+    if (searchContainer && !searchContainer.contains(e.relatedTarget)) {
+        this.value = '';
+        clearSuggestions();
+    }
+});
+
+
+
 document.querySelector('.search_input').addEventListener('input', function() {
     // Get the search query
-    var query = this.value;
+    let query = this.value;
 
     if (query.length < 1) {
-        document.querySelector('#bookSuggestions').innerHTML = '';
+        clearSuggestions();
         return;
     }
-    // Make an AJAX request to fetch book suggestions
-    var xhr = new XMLHttpRequest();
+
+    // Échapper la valeur de la requête
+    query = encodeURIComponent(query);
+
+    // Faire une requête AJAX sécurisée
+    let xhr = new XMLHttpRequest();
     xhr.open('GET', './search?query=' + query, true);
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            // Handle the response
-            var suggestions = JSON.parse(xhr.responseText);
-            var suggestionsHtml = '';
-            suggestions.forEach(function(suggestion) {
-                suggestionsHtml += '<li class="suggestion py-1"> <a href="./book_details?id=' + suggestion.data + '">';
-                suggestionsHtml += '<img src="' + suggestion.image + '" alt="' + suggestion.title + '">';
-                suggestionsHtml += '<span>' + suggestion.title + '</span>';
-                suggestionsHtml += '</a></li>';
-            });
-
-            suggestionsHtml = '<ul class="suggestions-list m-0">' + suggestionsHtml + '</ul>';
-            document.querySelector('#bookSuggestions').innerHTML = suggestionsHtml;
+            // Manipulation de la réponse
+            let suggestions = JSON.parse(xhr.responseText);
+            displaySuggestions(suggestions);
         }
     };
     xhr.send();
 });
-document.querySelector('.search_input').addEventListener('blur', function(e) {
-    var searchContainer = this.closest('.search-box');
-    if (searchContainer && !searchContainer.contains(e.relatedTarget)) {
-        this.value = '';
-        document.querySelector('#bookSuggestions').innerHTML = '';
+
+// Fonction pour afficher les suggestions
+function displaySuggestions(suggestions) {
+    // Supprimer les suggestions existantes
+    clearSuggestions();
+
+    // Créer et ajouter de nouveaux éléments pour chaque suggestion
+    let suggestionsList = document.createElement('ul');
+    suggestionsList.classList.add('suggestions-list', 'm-0');
+    suggestions.forEach(function(suggestion) {
+        let suggestionItem = document.createElement('li');
+        suggestionItem.classList.add('suggestion', 'py-1');
+
+        let link = document.createElement('a');
+        link.href = './book_details?id=' + encodeURIComponent(suggestion.data);
+
+        let image = document.createElement('img');
+        image.src = suggestion.image;
+        image.alt = suggestion.title;
+
+        let titleSpan = document.createElement('span');
+        titleSpan.textContent = suggestion.title;
+
+        link.appendChild(image);
+        link.appendChild(titleSpan);
+        suggestionItem.appendChild(link);
+        suggestionsList.appendChild(suggestionItem);
+    });
+
+    document.querySelector('#bookSuggestions').appendChild(suggestionsList);
+}
+
+// Fonction pour supprimer les suggestions existantes
+function clearSuggestions() {
+    let suggestionsContainer = document.querySelector('#bookSuggestions');
+    while (suggestionsContainer.firstChild) {
+        suggestionsContainer.removeChild(suggestionsContainer.firstChild);
     }
-});
+}
 
-
- 

@@ -11,17 +11,17 @@ class WishlistController
     
     public function index()
     {
-        $user = User::find($_SESSION['user']['id']);
+        $user = User::fetchId($_SESSION['user']['id']);
         if(!$user){
             Helper::session('error', 'User not found');
             Helper::redirect('login');
         }
-        $wishlist = Wishlist::fetchByUser($user->getId());
+        $wishlist = Wishlist::fetchByUser($user->id);
         $books = [];
         foreach($wishlist as $item){
-            $book = Book::fetchId($item->getBookId());
-            $book->setAuthor(Author::find($book->getAuthorId()));
-            $book->setCategory(Category::find($book->getCategoryId()));
+            $book = Book::fetchId($item->book_id);
+            $book->author = Author::fetchId($book->author_id);
+            $book->category = Category::fetchId($book->category_id);
             $books[] = $book;
         }
         return Helper::view("wishlist", ['books' => $books]);
@@ -31,7 +31,7 @@ class WishlistController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $book_id = $_POST['book_id'];
-            $user = User::find($_SESSION['user']['id']);
+            $user = User::fetchId($_SESSION['user']['id']);
             if(!$user){
                 Helper::session('error', 'User not found');
                 Helper::redirect('login');
@@ -42,8 +42,8 @@ class WishlistController
                 Helper::redirect('');
             }
             $wishlist = new Wishlist();
-            $wishlist->setBookId($book->getId());
-            $wishlist->setUserId($user->getId());
+            $wishlist->book_id = $book->id;
+            $wishlist->user_id = $user->id;
             $wishlist->create();
             Helper::session('message', 'Added to wishlist successfully');
             Helper::redirect('wishlist'); 
@@ -59,7 +59,7 @@ class WishlistController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $book_id = $_POST['book_id'];
-            $user = User::find($_SESSION['user']['id']);
+            $user = User::fetchId($_SESSION['user']['id']);
             if(!$user){
                 Helper::session('error', 'User not found');
                 Helper::redirect('login');
@@ -69,9 +69,9 @@ class WishlistController
                 Helper::session('error', 'Book not found');
                 Helper::redirect('');
             }
-            $wishlist = Wishlist::fetchByUser($user->getId());
+            $wishlist = Wishlist::fetchByUser($user->id);
             foreach($wishlist as $item){
-                if($item->getBookId() == $book->getId()){
+                if($item->book_id == $book->id){
                     $item->delete();
                     Helper::session('message', 'Removed from wishlist successfully');
                     Helper::redirect('wishlist'); 

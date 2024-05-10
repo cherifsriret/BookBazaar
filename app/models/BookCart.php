@@ -3,73 +3,21 @@
 /**
  * The BookCart class
  */
-class BookCart
-{
+require_once "core/database/Model.php";
 
-        private $id;
+class BookCart extends Model {
 
-        private $user_id;
-
-        private $book_id;
-
-        private $qty;
-        
-        private $book;
-
-        public function getId()
-        {
-            return $this->id;
-        }
-
-        public function setId($value)
-        {
-            $this->id = $value;
-        }
-        public function getUserId()
-        {
-            return $this->user_id;
-        }
-
-        public function setUserId($value)
-        {
-            $this->user_id = $value;
-        }
-
-        public function getBookId()
-        {
-            return $this->book_id;
-        }
-
-        public function setBookId($value)
-        {
-            $this->book_id = $value;
-        }
-
-        public function getQty()
-        {
-            return $this->qty;
-        }
-
-        public function setQty($value)
-        {
-            $this->qty = $value;
-        }
-
-        public function getBook()
-        {
-            return $this->book;
-        }
-
-        public function setBook($value)
-        {
-            $this->book = $value;
-        }
+        protected $id;
+        protected $user_id;
+        protected $book_id;
+        protected $qty;
+        protected $book;
 
         public static function fetchUserCart($userId , $page = 1)
         {
 
             $dbh = App::get('dbh');
-            $query = "SELECT * FROM book_cart WHERE user_id = :user_id";
+            $query = "SELECT * FROM bookcart WHERE user_id = :user_id";
             $query .= " ORDER BY id ASC";
             $statement = $dbh->prepare($query);
             $statement->bindParam(':user_id', $userId);
@@ -82,7 +30,7 @@ class BookCart
         public static function CartPageCount( $userId){
             $dbh = App::get('dbh');
             $limit = 12;
-            $query = "SELECT COUNT(*) as count FROM book_cart WHERE user_id = :user_id";
+            $query = "SELECT COUNT(*) as count FROM bookcart WHERE user_id = :user_id";
             $stmt = $dbh->prepare($query);
             $stmt->bindParam(':user_id', $userId);
             $stmt->execute();
@@ -91,26 +39,15 @@ class BookCart
             return ceil($total /  $limit);
         }
 
-        public static function fetchId($id)
-        {
-            $dbh = App::get('dbh');
-            $query = "SELECT * FROM book_cart WHERE id = :id";
-            $stmt = $dbh->prepare($query);
-            $stmt->bindParam(':id', $id);
-            $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_CLASS, 'BookCart');
-            return $stmt->fetch();
-        }
 
         public function create()
         {
-
-            $user_id = $this->getUserId();
-            $book_id = $this->getBookId();
-            $qty = $this->getQty();
+            $user_id = $this->user_id;
+            $book_id = $this->book_id;
+            $qty = $this->qty;
             $dbh = App::get('dbh');
             //check if the book is already in the cart then update the qty else insert a new record
-            $query = "SELECT * FROM book_cart WHERE user_id = :user_id AND book_id = :book_id";
+            $query = "SELECT * FROM bookcart WHERE user_id = :user_id AND book_id = :book_id";
             $stmt = $dbh->prepare($query);
             $stmt->bindParam(':user_id', $user_id);
             $stmt->bindParam(':book_id', $book_id);
@@ -120,14 +57,14 @@ class BookCart
 
             if ($book) {
                 $qty += $book['qty'];
-                $query = "UPDATE book_cart SET qty = :qty WHERE user_id = :user_id AND book_id = :book_id";
+                $query = "UPDATE bookcart SET qty = :qty WHERE user_id = :user_id AND book_id = :book_id";
                 $stmt = $dbh->prepare($query);
                 $stmt->bindParam(':user_id', $user_id);
                 $stmt->bindParam(':book_id', $book_id);
                 $stmt->bindParam(':qty', $qty);
                 $stmt->execute();
             } else {
-                $query = "INSERT INTO book_cart (user_id, book_id, qty) VALUES (:user_id, :book_id, :qty)";
+                $query = "INSERT INTO bookcart (user_id, book_id, qty) VALUES (:user_id, :book_id, :qty)";
                 $stmt = $dbh->prepare($query);
                 $stmt->bindParam(':user_id', $user_id);
                 $stmt->bindParam(':book_id', $book_id);
@@ -140,19 +77,19 @@ class BookCart
         public  function delete()
         {
             $dbh = App::get('dbh');
-            $userId = $this->getUserId();
-            $bookId = $this->getBookId();
-            $query = "DELETE FROM book_cart WHERE user_id = :user_id AND book_id = :book_id";
+            $user_id = $this->user_id;
+            $book_id = $this->book_id;
+            $query = "DELETE FROM bookcart WHERE user_id = :user_id AND book_id = :book_id";
             $stmt = $dbh->prepare($query);
-            $stmt->bindParam(':user_id', $userId);
-            $stmt->bindParam(':book_id', $bookId);
+            $stmt->bindParam(':user_id', $user_id);
+            $stmt->bindParam(':book_id', $book_id);
             $stmt->execute();
         }
 
         public function update()
         {
             $dbh = App::get('dbh');
-            $query = "UPDATE book_cart SET qty = :qty WHERE id = :id";
+            $query = "UPDATE bookcart SET qty = :qty WHERE id = :id";
             $stmt = $dbh->prepare($query);
             $stmt->bindParam(':qty', $this->qty);
             $stmt->bindParam(':id', $this->id);
@@ -163,7 +100,7 @@ class BookCart
         {
             $dbh = App::get('dbh');
 
-            $query = "SELECT SUM(book_cart.qty * books.price) as total FROM book_cart JOIN books ON book_cart.book_id = books.id WHERE user_id = :user_id";
+            $query = "SELECT SUM(bookcart.qty * books.price) as total FROM bookcart JOIN books ON bookcart.book_id = books.id WHERE user_id = :user_id";
              $stmt = $dbh->prepare($query);
             $stmt->bindParam(':user_id', $userId);
             $stmt->execute();
@@ -177,7 +114,7 @@ class BookCart
         {
             $dbh = App::get('dbh');
 
-            $query = "SELECT SUM(qty) as total FROM book_cart WHERE user_id = :user_id";
+            $query = "SELECT SUM(qty) as total FROM bookcart WHERE user_id = :user_id";
             $stmt = $dbh->prepare($query);
             $stmt->bindParam(':user_id', $userId);
             $stmt->execute();
@@ -189,8 +126,8 @@ class BookCart
         {
             $cart_books  = BookCart::fetchUserCart($userId)??[];
             foreach ($cart_books  as $cart_book) {
-                $book_c = Book::fetchId($cart_book->getBookId());
-                $cart_book->setBook($book_c);
+                $book_c = Book::fetchId($cart_book->book_id);
+                $cart_book->book = $book_c;
             }
             $serialized_cart = serialize($cart_books);
             Helper::session('cart', $serialized_cart);

@@ -7,9 +7,9 @@ class CategoryController
     
     public function index()
     {
-        $categories = Category::fetchCategories($_GET['page'] ?? 1);
-        $categories_page_count = Category::CategoriesPageCount($_GET['page'] ?? 1);
-        return Helper::view("admin_categories", ['categories' => $categories ,'currentPage' => $_GET['page'] ?? 1 , 'totalPages' => $categories_page_count]);
+        $categories = Category::fetchCategories($_GET['page'] ?? 1 , 15);
+        $categories_page_count = Category::CategoriesPageCount( 15);
+        return Helper::view("admin_categories", ['categories' => $categories ,'current_url' => 'admin_categories' ,'currentPage' => $_GET['page'] ?? 1 , 'totalPages' => $categories_page_count]);
     }
 
     public function create()
@@ -19,7 +19,7 @@ class CategoryController
             if(isset($name))
             {
                 $category = new Category();
-                $category->setName($name);
+                $category->name = $name;
                 $category->create();
                 Helper::session('message', 'Created successfully');
             }
@@ -42,13 +42,13 @@ class CategoryController
             $name = $_POST['name'];
             if(isset($id) && isset($name))
             {
-                $category = Category::find($id);
+                $category = Category::fetchId($id);
                 if(!$category){
                     Helper::session('error', 'Category not found');
                 }
                 else
                 {
-                    $category->setName($name);
+                    $category->name = $name;
                     $category->update();
                     Helper::session('message', 'Updated successfully');
                 }
@@ -69,7 +69,7 @@ class CategoryController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
-            $category = Category::find($id);
+            $category = Category::fetchId($id);
             if($category){
                 $is_deleted = $category->delete();
                 if($is_deleted === true){

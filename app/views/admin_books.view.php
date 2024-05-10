@@ -29,64 +29,25 @@
     <tbody>
     <?php foreach($books as $book): ?>
       <tr>
-        <th scope="row"><?=$book->getIsbn() ?></th>
-        <td><img src="<?= $book->getImage() ?>"    height= 100></td>
-        <td><?= $book->getTitle() ?></td>
-        <td><?= $book->getCategory()?->getName() ?></td>
-        <td><?= $book->getAuthor()?->getName()??"" ?></td>
-        <td><?= $book->getPrice() ?> €</td>
+        <th scope="row"><?=$book->isbn ?></th>
+        <td><img src="<?= $book->image ?>"    height= 100></td>
+        <td><?= $book->title ?></td>
+        <td><?= $book->category?->name??""  ?></td>
+        <td><?= $book->author?->name??"" ?></td>
+        <td><?= $book->price ?> €</td>
         <td>
-          <a href="./book_details?id=<?= $book->getId() ?>" class="btn btn-primary">Show</a>
-          <a href="./book_edit?id=<?= $book->getId() ?>" class="btn btn-warning">Edit</a>
-          <button type="button" class="btn btn-danger delete-Book" data-bs-toggle="modal" data-bs-target="#deleteBook" data-id="<?= $book->getId() ?>">Delete</button>
+          <a href="./book_details?id=<?= $book->id ?>" class="btn btn-primary">Show</a>
+          <a href="./book_edit?id=<?= $book->id ?>" class="btn btn-warning">Edit</a>
+          <button type="button" class="btn btn-danger delete-Book" data-bs-toggle="modal" data-bs-target="#deleteBook" data-id="<?= $book->id ?>">Delete</button>
         </td>
 
       </tr>
       <?php endforeach; ?>
     </tbody>
   </table>
-
-
-
+  
   <!-- Add pagination -->
-  <nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-
-      <?php 
-      $currentParams = $_GET;
-      unset($currentParams['page']);
-
-      foreach ($currentParams as $key => $value) {
-        $currentParams[$key] = urlencode($value);
-      }
-
-      foreach ($currentParams as $key => $value) {
-        $currentParams[$key] = "$key=$value";
-      }
-
-      $currentParamsString = implode('&', $currentParams);
-      ?>
-      <li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./admin_books?page=1&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">First</a>
-      </li>
-      <li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./admin_books?page=<?php echo $currentPage - 1; ?>&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">Previous</a>
-      </li>
-
-      <?php for ($i = max(1, $currentPage - 2); $i <= min($currentPage + 2, $totalPages); $i++): ?>
-        <li class="page-item <?php echo ($currentPage == $i) ? 'active' : ''; ?>">
-          <a class="page-link" href="./admin_books?page=<?php echo $i; ?>&<?= $currentParamsString ?>"><?php echo $i; ?></a>
-        </li>
-      <?php endfor; ?>
-
-      <li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./admin_books?page=<?php echo $currentPage + 1; ?>&<?= $currentParamsString ?>">Next</a>
-      </li>
-      <li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-        <a class="page-link" href="./admin_books?page=<?php echo $totalPages; ?>&<?= $currentParamsString ?>">Last</a>
-      </li>
-    </ul>
-  </nav>
+  <?php require('partials/pagination.php') ?>
 
 </main>
 

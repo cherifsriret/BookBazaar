@@ -26,15 +26,15 @@
     <tbody>
       <?php foreach($books as $book): ?>
         <tr>
-          <th scope="row"><?=$book->getIsbn() ?></th>
-          <td><img src="<?= $book->getImage() ?>"    height= 100></td>
-          <td><?= $book->getTitle() ?></td>
-          <td><?= $book->getCategory()?->getName() ?></td>
-          <td><?= $book->getAuthor()?->getName()??"" ?></td>
-          <td><?= $book->getPrice() ?> €</td>
+          <th scope="row"><?=  htmlentities($book->isbn) ?></th>
+          <td><img src="<?=  htmlentities($book->image) ?>"    height= 100></td>
+          <td><?=  htmlentities($book->title) ?></td>
+          <td><?=  htmlentities($book->category?->name??"") ?></td>
+          <td><?=  htmlentities($book->author?->name??"") ?></td>
+          <td><?=  htmlentities($book->price) ?> €</td>
           <td>
-            <a href="./book_details?id=<?= $book->getId() ?>" class="btn btn-primary">Show</a>
-            <button class="btn btn-danger delete-wishlist" data-id="<?= $book->getId() ?>">Remove from whishlist</button>
+            <a href="./book_details?id=<?= urlencode($book->id) ?>" class="btn btn-primary">Show</a>
+            <button class="btn btn-danger delete-wishlist" data-id="<?= urlencode($book->id) ?>">Remove from whishlist</button>
           </td>
         </tr>
       <?php endforeach; ?>

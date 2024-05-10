@@ -25,8 +25,8 @@ class UserController
            {
                 $cart_books  = BookCart::fetchUserCart($user_id)??[];
                 foreach ($cart_books  as $cart_book) {
-                    $book_c = Book::fetchId($cart_book->getBookId());
-                    $cart_book->setBook($book_c);
+                    $book_c = Book::fetchId($cart_book->book_id);
+                    $cart_book->book = $book_c;
                 }
                 $serialized_cart = serialize($cart_books);
                 Helper::session('cart', $serialized_cart);
@@ -71,12 +71,12 @@ class UserController
             }
 
             $user = new User();
-            $user->setFirstName($first_name);
-            $user->setLastName($last_name);
-            $user->setEmail($email);
-            $user->setPhone($phone);
-            $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
-            $user->setRole('user');
+            $user->first_name = $first_name;
+            $user->last_name = $last_name;
+            $user->email = $email;
+            $user->phone = $phone;
+            $user->password = password_hash($password, PASSWORD_DEFAULT);
+            $user->role = 'user';
             $user->create();
             Helper::session('message', 'User created successfully');
             Helper::redirect('login_form');
@@ -100,14 +100,14 @@ class UserController
 
     public function profile()
     {
-        $user = User::find($_SESSION['user']['id']);
+        $user = User::fetchId($_SESSION['user']['id']);
         return Helper::view("profile", ['user' => $user]);
     }
 
     public function editProfile()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $user = User::find($_SESSION['user']['id']);
+            $user = User::fetchId($_SESSION['user']['id']);
             $first_name = $_POST['firstName'];
             $last_name = $_POST['lastName'];
             $phone = $_POST['phone'];
@@ -119,11 +119,11 @@ class UserController
                 Helper::session('error', 'Password and password confirmation does not match');
                 Helper::redirect('profile'); 
             }
-
-            $user->setFirstName($first_name);
-            $user->setLastName($last_name);
-            $user->setPhone($phone);
-            $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
+            $user->first_name = $first_name;
+            $user->last_name = $last_name;
+            $user->phone = $phone;
+            $user->password = password_hash($password, PASSWORD_DEFAULT);
+            $user->role = 'user';
             $user->update();
             Helper::session('message', 'User updated successfully');
             Helper::redirect('profile');

@@ -10,17 +10,17 @@
   ?>
   <div class="row m-5">
     <div class="col-lg-6 border">
-      <img src="<?= $book->getImage() ?>" class="img-fluid" alt="Product Image">
+      <img src="<?= htmlentities($book->image) ?>" class="img-fluid" alt="Product Image">
     </div>
     <div class="col-lg-6">
       <form action="./add_to_cart" method="post">
-        <h2 class="mt-2 text-center"><?=  $book->getTitle();?></h2>
-        <input type="hidden" name="book_id" value="<?=  $book->getId();?>">
+        <h2 class="mt-2 text-center"><?= htmlentities($book->title) ?></h2>
+        <input type="hidden" name="book_id" value="<?= urlencode($book->id) ?>">
         <ul class="list-group my-4">
-          <li class="list-group-item">Category : <?= $book->getCategory()?->getName() ?></li>
-          <li class="list-group-item">Author : <?= $book->getAuthor()?->getName()??"" ?></li>
+          <li class="list-group-item">Category : <?= htmlentities($book->category->name)??"" ?></li>
+          <li class="list-group-item">Author : <?= htmlentities($book->author->name)??"" ?></li>
         </ul>
-        <h3 class="mb-3">Price : <?=  $book->getPrice();?> €</h3>
+        <h3 class="mb-3">Price : <?= htmlentities($book->price) ?> €</h3>
         <hr>
         <div class="d-flex align-items-center mb-3">
           <span class="me-2">Quantity:</span>
@@ -40,13 +40,15 @@
       <?php foreach($books_same_author as $book): ?>
         <div class="col">
           <div class="card">
-            <img src="<?= $book->getImage() ?>" class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title"><?= $book->getTitle() ?></h5>
-              <p class="card-text"><?= $book->getPrice() ?> €</p>
+              <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title"><?= htmlentities($book->title) ?></h5>
+                <p class="card-text"><?= htmlentities($book->price) ?> €</p>
+              </div>
+              <div class="card-footer text-center"> 
+                <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Add To Cart</a>
+              </div>
             </div>
-              <div class="card-footer text-center"> <a class="btn btn-dark" href="./book_details?id=<?= $book->getId() ?>">Add To Cart</a></div>
-          </div>
         </div>
       <?php endforeach; ?>
     </div>
@@ -58,13 +60,15 @@
       <?php foreach($books_same_category as $book): ?>
         <div class="col">
           <div class="card">
-            <img src="<?= $book->getImage() ?>" class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title"><?= $book->getTitle() ?></h5>
-              <p class="card-text"><?= $book->getPrice() ?> €</p>
+              <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title"><?= htmlentities($book->title) ?></h5>
+                <p class="card-text"><?= htmlentities($book->price) ?> €</p>
+              </div>
+              <div class="card-footer text-center"> 
+                <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Add To Cart</a>
+              </div>
             </div>
-              <div class="card-footer text-center"> <a class="btn btn-dark" href="./book_details?id=<?= $book->getId() ?>">Add To Cart</a></div>
-          </div>
         </div>
       <?php endforeach; ?>
     </div>

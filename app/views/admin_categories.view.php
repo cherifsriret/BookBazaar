@@ -28,14 +28,13 @@
     <tbody>
     <?php foreach($categories as $category): ?>
       <tr>
-        <th scope="row"><?=$category->getId() ?></th>
-        <td><?= $category->getName() ?></td>
-        <td>
-          <button type="button" class="btn btn-warning update-category" data-bs-toggle="modal" data-bs-target="#updateCategory" data-id="<?= $category->getId() ?>" data-name="<?= $category->getName() ?>">Edit</button>
-          <button type="button" class="btn btn-danger delete-category" data-bs-toggle="modal" data-bs-target="#deleteCategory" data-id="<?= $category->getId() ?>">Delete</button>
-        </td>
-
-      </tr>
+          <th scope="row"><?= urlencode($category->id) ?></th>
+          <td><?= htmlentities($category->name) ?></td>
+          <td>
+            <button type="button" class="btn btn-warning update-category" data-bs-toggle="modal" data-bs-target="#updateCategory" data-id="<?= urlencode($category->id) ?>" data-name="<?= htmlentities($category->name) ?>">Edit</button>
+            <button type="button" class="btn btn-danger delete-category" data-bs-toggle="modal" data-bs-target="#deleteCategory" data-id="<?= urlencode($category->id) ?>">Delete</button>
+          </td>
+        </tr>
       <?php endforeach; ?>
     </tbody>
   </table>
@@ -43,45 +42,7 @@
 
 
   <!-- Add pagination -->
-  <nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-
-    <?php 
-    $currentParams = $_GET;
-    unset($currentParams['page']);
-
-    foreach ($currentParams as $key => $value) {
-      $currentParams[$key] = urlencode($value);
-    }
-
-    foreach ($currentParams as $key => $value) {
-      $currentParams[$key] = "$key=$value";
-    }
-
-    $currentParamsString = implode('&', $currentParams);
-    ?>
-    <li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-      <a class="page-link" href="./admin_categories?page=1&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">First</a>
-    </li>
-    <li class="page-item <?php echo ($currentPage == 1) ? 'disabled' : ''; ?>">
-      <a class="page-link" href="./admin_categories?page=<?php echo $currentPage - 1; ?>&<?= $currentParamsString ?>" tabindex="-1" aria-disabled="true">Previous</a>
-    </li>
-
-    <?php for ($i = max(1, $currentPage - 2); $i <= min($currentPage + 2, $totalPages); $i++): ?>
-      <li class="page-item <?php echo ($currentPage == $i) ? 'active' : ''; ?>">
-        <a class="page-link" href="./admin_categories?page=<?php echo $i; ?>&<?= $currentParamsString ?>"><?php echo $i; ?></a>
-      </li>
-    <?php endfor; ?>
-
-    <li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-      <a class="page-link" href="./admin_categories?page=<?php echo $currentPage + 1; ?>&<?= $currentParamsString ?>">Next</a>
-    </li>
-    <li class="page-item <?php echo ($currentPage == $totalPages) ? 'disabled' : ''; ?>">
-      <a class="page-link" href="./admin_categories?page=<?php echo $totalPages; ?>&<?= $currentParamsString ?>">Last</a>
-    </li>
-
-    </ul>
-  </nav>
+  <?php require('partials/pagination.php') ?>
 </main>
 
 
@@ -141,14 +102,14 @@
 </div>
 
 <script>
-  var updateCategoryModal = document.getElementById('updateCategory')
+  let updateCategoryModal = document.getElementById('updateCategory')
   updateCategoryModal.addEventListener('show.bs.modal', function (event) {
-    var button = event.relatedTarget
-    var id = button.getAttribute('data-id')
-    var name = button.getAttribute('data-name')
-    var modalTitle = updateCategoryModal.querySelector('.modal-title')
-    var nameInput = updateCategoryModal.querySelector('#name')
-    var idInput = updateCategoryModal.querySelector('#update_category_id')
+    let button = event.relatedTarget
+    let id = button.getAttribute('data-id')
+    let name = button.getAttribute('data-name')
+    let modalTitle = updateCategoryModal.querySelector('.modal-title')
+    let nameInput = updateCategoryModal.querySelector('#name')
+    let idInput = updateCategoryModal.querySelector('#update_category_id')
     modalTitle.textContent = 'Update Category'
     nameInput.value = name
     idInput.value = id
@@ -181,12 +142,12 @@
 </div>
 
 <script>
-  var deleteCategoryModal = document.getElementById('deleteCategory')
+  let deleteCategoryModal = document.getElementById('deleteCategory')
   deleteCategoryModal.addEventListener('show.bs.modal', function (event) {
-    var button = event.relatedTarget
-    var id = button.getAttribute('data-id')
-    var modalTitle = deleteCategoryModal.querySelector('.modal-title')
-    var idInput = deleteCategoryModal.querySelector('#delete_category_id')
+    let button = event.relatedTarget
+    let id = button.getAttribute('data-id')
+    let modalTitle = deleteCategoryModal.querySelector('.modal-title')
+    let idInput = deleteCategoryModal.querySelector('#delete_category_id')
     modalTitle.textContent = 'Delete Category'
     idInput.value = id
   })

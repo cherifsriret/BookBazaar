@@ -17,13 +17,13 @@
       <?php foreach($latestBooks as $book): ?>
         <div class="col">
           <div class="card">
-            <img src="<?= $book->getImage() ?>" class="card-img-top" alt="...">
+            <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
             <div class="card-body">
-              <h5 class="card-title"><?= $book->getTitle() ?></h5>
-              <p class="card-text"><?= $book->getPrice() ?> €</p>
+              <h5 class="card-title"><?= htmlentities($book->title) ?></h5>
+              <p class="card-text"><?= htmlentities($book->price) ?> €</p>
             </div>
             <div class="card-footer text-center"> 
-              <a class="btn btn-dark" href="./book_details?id=<?= $book->getId() ?>">Add To Cart</a>
+              <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Add To Cart</a>
             </div>
           </div>
         </div>
@@ -37,14 +37,14 @@
       <?php foreach($mostSellerBooks as $book): ?>
           <div class="col">
             <div class="card">
-                <img src="<?= $book->getImage() ?>" class="card-img-top" alt="...">
-                <div class="card-body">
-                <h5 class="card-title"><?= $book->getTitle() ?></h5>
-                <p class="card-text"><?= $book->getPrice() ?> €</p>
-                </div>
-                <div class="card-footer text-center"> 
-                  <a class="btn btn-dark" href="./book_details?id=<?= $book->getId() ?>">Add To Cart</a>
-                </div>
+              <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title"><?= htmlentities($book->title) ?></h5>
+                <p class="card-text"><?= htmlentities($book->price) ?> €</p>
+              </div>
+              <div class="card-footer text-center"> 
+                <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Add To Cart</a>
+              </div>
             </div>
           </div>
           <?php endforeach; ?>
@@ -57,15 +57,15 @@
       <?php foreach($featuredBooks as $book): ?>
         <div class="col">
           <div class="card">
-            <img src="<?= $book->getImage() ?>" class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title"><?= $book->getTitle() ?></h5>
-              <p class="card-text"><?= $book->getPrice() ?> €</p>
+              <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title"><?= htmlentities($book->title) ?></h5>
+                <p class="card-text"><?= htmlentities($book->price) ?> €</p>
+              </div>
+              <div class="card-footer text-center"> 
+                <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Add To Cart</a>
+              </div>
             </div>
-            <div class="card-footer text-center"> 
-              <a class="btn btn-dark" href="./book_details?id=<?= $book->getId() ?>">Add To Cart</a>
-            </div>
-          </div>
         </div>
         <?php endforeach; ?>
     </div>

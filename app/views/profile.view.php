@@ -14,19 +14,19 @@
     
         <div class="form-group">
             <label for="firstName">First Name</label>
-            <input type="text" class="form-control" id="firstName" name="firstName" value="<?= $user->getFirstName() ?>" required>
+            <input type="text" class="form-control" id="firstName" name="firstName" value="<?= htmlentities($user->first_name) ?>" required>
         </div>
         <div class="form-group">
             <label for="lastName">Last Name</label>
-            <input type="text" class="form-control" id="lastName" name="lastName" value="<?= $user->getLastName() ?>" required>
+            <input type="text" class="form-control" id="lastName" name="lastName" value="<?= htmlentities($user->last_name) ?>" required>
         </div>
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="text" class="form-control" id="email" name="email" value="<?= $user->getEmail() ?>" disabled>
+            <input type="text" class="form-control" id="email" name="email" value="<?= htmlentities($user->email) ?>" disabled>
         </div>
         <div class="form-group">
             <label for="phone">Phone Number</label>
-            <input type="tel" class="form-control" id="phone" name="phone" value="<?= $user->getPhone() ?>" required>
+            <input type="tel" class="form-control" id="phone" name="phone" value="<?= htmlentities($user->phone) ?>" required>
         </div>
 
         <div class="form-group">

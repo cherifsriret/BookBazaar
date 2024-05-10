@@ -7,9 +7,9 @@
         <?php else: ?>
             <?php foreach($cart_books  as $cart_book): ?>
                 <div class="d-flex justify-content-between">
-                    <img src="<?= $cart_book->getBook()->getImage() ?>" alt="" height= 50>
-                    <span><?= $cart_book->getBook()->getTitle() ?></span>
-                    <span><?= $cart_book->getQty() ?>x<?= $cart_book->getBook()->getPrice() ?>€</span>
+                    <img src="<?= htmlentities($cart_book->book->image) ?>" alt="" height= 50>
+                    <span><?= htmlentities($cart_book->book->title) ?></span>
+                    <span><?= htmlentities($cart_book->qty) ?>x<?= htmlentities($cart_book->book->price) ?>€</span>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>

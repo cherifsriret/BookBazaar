@@ -19,79 +19,79 @@
         <div class="col-md-6">
           <div class="form-group">
             <label for="first-name">First Name</label>
-            <input type="text" class="form-control" id="first-name" name="first_name" placeholder="First Name" value="<?= $order->getUser()->getFirstName() ?>" disabled>
+            <input type="text" class="form-control" id="first-name" name="first_name" placeholder="First Name" value="<?= htmlentities($order->user->first_name) ?>" disabled>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
             <label for="last-name">Last Name</label>
-            <input type="text" class="form-control" id="last-name" name="last_name" placeholder="Last Name" value="<?= $order->getUser()->getLastName() ?>" disabled>
+            <input type="text" class="form-control" id="last-name" name="last_name" placeholder="Last Name" value="<?= htmlentities($order->user->last_name) ?>" disabled>
           </div>
         </div>
         <div class="col-md-6">
           <!-- /.form-group -->
           <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="<?= $order->getUser()->getEmail() ?>" disabled>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="<?= htmlentities($order->user->email) ?>" disabled>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
             <label for="phone">Phone</label>
-            <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" value="<?= $order->getUser()->getPhone() ?>" disabled>
+            <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" value="<?= htmlentities($order->user->phone) ?>" disabled>
           </div>  
         </div>
       </div>
       <hr>
       <h2>Shipping Address</h2>
       <div class="row">
-        <div class="col-md-6">
+      <div class="col-md-6">
           <div class="form-group">
             <label for="first-name">First Name</label>
-            <input type="text" class="form-control" id="first-name" name="first_name" placeholder="First Name" value="<?= $order->getFirstName() ?>" disabled>
+            <input type="text" class="form-control" id="first-name" name="first_name" placeholder="First Name" value="<?= htmlentities($order->first_name) ?>" disabled>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
             <label for="last-name">Last Name</label>
-            <input type="text" class="form-control" id="last-name" name="last_name" placeholder="Last Name" value="<?= $order->getLastName() ?>" disabled>
+            <input type="text" class="form-control" id="last-name" name="last_name" placeholder="Last Name" value="<?= htmlentities($order->last_name) ?>" disabled>
           </div>
         </div>
         <div class="col-md-6">
           <!-- /.form-group -->
           <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="<?= $order->getEmail() ?>" disabled>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="<?= htmlentities($order->email) ?>" disabled>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group">
             <label for="phone">Phone</label>
-            <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" value="<?= $order->getPhone() ?>" disabled>
+            <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" value="<?= htmlentities($order->phone) ?>" disabled>
           </div>  
         </div>
         <div class="col-md-12">
           <div class="form-group">
             <label for="address">Address</label>
-            <input type="text" class="form-control" id="address" name="address" placeholder="Address" value="<?= $order->getAddress() ?>" disabled>
+            <input type="text" class="form-control" id="address" name="address" placeholder="Address" value="<?= htmlentities($order->address) ?>" disabled>
           </div>
         </div>
         <div class="col-md-4">
           <div class="form-group">
             <label for="city">City</label>
-            <input type="text" class="form-control" id="city" name="city" placeholder="City" value="<?= $order->getCity() ?>" disabled>
+            <input type="text" class="form-control" id="city" name="city" placeholder="City" value="<?= htmlentities($order->city) ?>" disabled>
           </div>
         </div>
         <div class="col-md-4">
           <div class="form-group">
             <label for="state">State</label>
-            <input type="text" class="form-control" id="state" name="state" placeholder="State" value="<?= $order->getState() ?>" disabled>
+            <input type="text" class="form-control" id="state" name="state" placeholder="State" value="<?= htmlentities($order->status) ?>" disabled>
           </div>
         </div>
         <div class="col-md-4">
           <div class="form-group">
             <label for="zip">Zip</label>
-            <input type="text" class="form-control" id="zip" name="zip" placeholder="Zip" value="<?= $order->getZipCode() ?>" disabled>
+            <input type="text" class="form-control" id="zip" name="zip" placeholder="Zip" value="<?= htmlentities($order->zip_code) ?>" disabled>
           </div>
         </div>
       </div>
@@ -101,37 +101,36 @@
     <div class="col-lg-6">
       <br>
       <div class="cart-totals bg-body-secondary px-4 py-2 rounded-3">
-        <h3 class="my-3">Order Status : <span class="label label-info"> <?= $order->getStatus() ?></span> </h3>
+        <h3 class="my-3">Order Status : <span class="label label-info"> <?= htmlentities($order->status) ?></span> </h3>
           <?php $total_order = 0; ?>
           <?php foreach($order_items  as $order_item): 
-            $total_order += $order_item->getPrice() * $order_item->getQty();
+            $total_order +=htmlentities($order_item->price) * htmlentities($order_item->qty) ;
             ?>
-            <div class="d-flex justify-content-between mt-3">
-              <img src="<?= $order_item->getBook()->getImage() ?>" alt="" height= 50>
-              <span><?= $order_item->getBook()->getTitle() ?></span>
-              <span><?= $order_item->getQty() ?>*<?= $order_item->getPrice() ?>€</span>
-            </div>
-          <?php endforeach; ?>
+          <div class="d-flex justify-content-between mt-3">
+            <img src="<?= htmlentities($order_item->book->image) ?>" alt="" height= 50>
+            <span><?= htmlentities($order_item->book->title) ?></span>
+            <span><?= htmlentities($order_item->qty) ?>*<?= htmlentities($order_item->price) ?>€</span>
+          </div>
+        <?php endforeach; ?>
       </div>
       <div class="cart-totals bg-body-secondary px-4 py-2 mt-2 rounded-3">
         <h3 class="my-3">Order Totals</h3>
         <table>
             <tbody>
-                <tr>
-                    <td>Subtotal</td>
-                    <td class="subtotal"><?= $total_order ?>€ </td>
-                </tr>
-                <tr>
-                    <td>Shipping</td>
-                    <td class="free-shipping">Free Shipping</td>
-                </tr>
-                <tr class="total-row">
-                    <td>Total</td>
-                    <td class="price-total"><?= $total_order ?>€</td>
-                </tr>
+              <tr>
+                <td>Subtotal</td>
+                <td class="subtotal"><?= htmlentities($total_order) ?>€ </td>
+              </tr>
+              <tr>
+                <td>Shipping</td>
+                <td class="free-shipping">Free Shipping</td>
+              </tr>
+              <tr class="total-row">
+                <td>Total</td>
+                <td class="price-total"><?= htmlentities($total_order) ?>€</td>
+              </tr>
             </tbody>
-        </table>
-
+          </table>
         <h3 class="my-3">Actions</h3>
         <a href="./admin_orders" class="btn btn-primary">Back to Orders</a>
         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateOrderStatus">
@@ -157,14 +156,14 @@
             <div class="form-group">
                 <label for="status">Status</label>
                 <select class="form-select" id="status" name="status" required>
-                    <option value="Pending" <?= $order->getStatus() == "Pending" ? 'selected' : ''  ?>>Pending</option>
-                    <option value="Processing" <?= $order->getStatus() == "Processing" ? 'selected' : ''  ?>>Processing</option>
-                    <option value="Shipped" <?= $order->getStatus() == "Shipped" ? 'selected' : ''  ?>>Shipped</option>
-                    <option value="Delivered" <?= $order->getStatus() == "Delivered" ? 'selected' : ''  ?>>Delivered</option>
-                    <option value="Canceled" <?= $order->getStatus() == "Canceled" ? 'selected' : ''  ?>>Canceled</option>
+                    <option value="Pending" <?= htmlentities($order->status) == "Pending" ? 'selected' : ''  ?>>Pending</option>
+                    <option value="Processing" <?= htmlentities($order->status) == "Processing" ? 'selected' : ''  ?>>Processing</option>
+                    <option value="Shipped" <?= htmlentities($order->status) == "Shipped" ? 'selected' : ''  ?>>Shipped</option>
+                    <option value="Delivered" <?= htmlentities($order->status) == "Delivered" ? 'selected' : ''  ?>>Delivered</option>
+                    <option value="Canceled" <?= htmlentities($order->status) == "Canceled" ? 'selected' : ''  ?>>Canceled</option>
                 </select>
             </div>
-            <input type="hidden" name="order_id" id="update_order_id" value="<?= $order->getId() ?>">
+            <input type="hidden" name="order_id" id="update_order_id" value="<?= urlencode($order->id) ?>">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

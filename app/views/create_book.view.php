@@ -33,7 +33,7 @@
             <label for="Author">Author</label>
             <select class="form-control" id="Author" name="Author" required>
                 <?php foreach($authors as $author): ?>
-                    <option value="<?= $author->getId() ?>" ><?= $author->getName() ?> </option>
+                    <option value="<?= urlencode($author->id) ?>" ><?= htmlentities($author->name) ?> </option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -42,7 +42,7 @@
             <label for="Category">Category</label>
             <select class="form-control" id="Category" name="Category" required>
                 <?php foreach($categories as $category): ?>
-                    <option value="<?= $category->getId() ?>" ><?= $category->getName() ?></option>
+                    <option value="<?= urlencode($category->id) ?>" ><?= htmlentities($category->name) ?></option>
                 <?php endforeach; ?>
             </select>
         </div>

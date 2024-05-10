@@ -22,7 +22,7 @@
         $book_isbn = $books[$i][0];
         //insert authors if name not exists
         // Check if author exists
-        $stmt = $pdo->prepare("SELECT * FROM authors WHERE name = ?");
+        $stmt = $pdo->prepare("SELECT * FROM author WHERE name = ?");
         $stmt->bindParam(1, $author_name);  
         $stmt->execute();
         $result = $stmt->fetch();
@@ -32,7 +32,7 @@
             $author_id = $author['id'];
         } else {
             // Author does not exist, insert new author
-            $stmt = $pdo->prepare("INSERT INTO authors (name) VALUES (?)");
+            $stmt = $pdo->prepare("INSERT INTO author (name) VALUES (?)");
             $stmt->bindParam(1, $author_name);
             $stmt->execute();
             $author_id = $pdo->lastInsertId();
@@ -40,7 +40,7 @@
         $stmt->closeCursor();
         //insert categories if name not exists
         // Check if category exists
-        $stmt = $pdo->prepare("SELECT * FROM categories WHERE name = ?");
+        $stmt = $pdo->prepare("SELECT * FROM category WHERE name = ?");
         $stmt->bindParam(1, $category_name);
         $stmt->execute();
         $result = $stmt->fetch();
@@ -50,7 +50,7 @@
             $category_id = $category['id'];
         } else {
             // Category does not exist, insert new category
-            $stmt = $pdo->prepare("INSERT INTO categories (name) VALUES (?)");
+            $stmt = $pdo->prepare("INSERT INTO category (name) VALUES (?)");
             $stmt->bindParam(1, $category_name);
             $stmt->execute();
             $category_id = $pdo->lastInsertId();
@@ -59,7 +59,7 @@
         //price random between 10 and 100
         $price = rand(10, 100);
         // prepared statement with question mark placeholders (marqueurs de positionnement)
-        $req = "INSERT INTO books (isbn, title, image, price , author_id, category_id ) VALUES (?, ?, ?,?, ?, ?)";
+        $req = "INSERT INTO book (isbn, title, image, price , author_id, category_id ) VALUES (?, ?, ?,?, ?, ?)";
         $statement = $pdo->prepare($req);
         $statement->bindParam(1, $book_isbn, PDO::PARAM_STR);
         $statement->bindParam(2, $book_title, PDO::PARAM_STR);
