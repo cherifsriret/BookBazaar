@@ -27,7 +27,7 @@ class OrderController
         
     public function order_details()
     {
-        $order = Orders::getOrder($_GET['id']);
+        $order = Orders::fetchId($_GET['id']);
         if(!$order){
             // Redirect to 404 page not found
             Helper::redirect('404');
@@ -49,7 +49,7 @@ class OrderController
     
     public function order_admin_details()
     {
-        $order = Orders::getOrder($_GET['id']);
+        $order = Orders::fetchId($_GET['id']);
         if(!$order){
             // Redirect to 404 page not found
             Helper::redirect('404');
@@ -67,7 +67,7 @@ class OrderController
     
     public function update_order_status()
     {
-        $order = Orders::getOrder($_POST['order_id']);
+        $order = Orders::fetchId($_POST['order_id']);
         if(!$order){
             // Redirect to 404 page not found
             Helper::redirect('404');

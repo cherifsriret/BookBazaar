@@ -10,7 +10,8 @@
             </a>
         </div>
     </div>
-    <div id="bookSuggestions" class="p-0 mt-1" ></div>
+    <div id="bookSuggestions" class="p-0 mt-1" >
+    </div>
 </div>
 
 

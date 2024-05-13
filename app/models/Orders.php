@@ -71,15 +71,6 @@ class Orders extends Model {
         return ceil($total /  $limit);
     }
 
-    public static function getOrder($orderId)
-    {
-        $dbh = App::get('dbh');
-        $statement = $dbh->prepare("SELECT * FROM orders WHERE id = ?");
-        $statement->setFetchMode(PDO::FETCH_CLASS, 'Orders');
-        $statement->execute([$orderId]);
-        return $statement->fetch();
-    }
-
     public function save()
     {
         $dbh = App::get('dbh');
