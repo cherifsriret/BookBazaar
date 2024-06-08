@@ -60,14 +60,14 @@ $router->define([
   'admin_users' => ["action" => 'UserController@list_users' , "is_protected" => true,'role'=>['moderator', 'administrator']], //GET
   'ban_user' => ["action" => 'UserController@banUser' , "is_protected" => true,'role'=>['moderator', 'administrator']], //POST
   'unban_user' => ["action" => 'UserController@unbanUser' , "is_protected" => true,'role'=>['moderator', 'administrator']], //POST
+  'edit_user' => ["action" => 'UserController@edit' , "is_protected" => true,'role'=>['moderator', 'administrator']], //GET
+  'edit_user_post' => ["action" => 'UserController@editPost' , "is_protected" => true,'role'=>['moderator', 'administrator']], //POST
+  'create_user' => ["action" => 'UserController@create' , "is_protected" => true,'role'=>['moderator', 'administrator']], //GET
+  'create_user_post' => ["action" => 'UserController@createPost' , "is_protected" => true,'role'=>['moderator', 'administrator']], //POST
 
-  // admin moderators routes
-  'admin_moderators' => ["action" => 'UserController@list_moderators' , "is_protected" => true,'role'=>['administrator']], //GET
-  'moderator_add_form' => ["action" => 'ModeratorController@addForm' , "is_protected" => true,'role'=>['administrator']], //GET
-  'moderator_add' => ["action" => 'ModeratorController@add' , "is_protected" => true,'role'=>['administrator']], //POST
-  'moderator_edit' => ["action" => 'ModeratorController@edit' , "is_protected" => true,'role'=>['administrator']], //GET
-  'moderator_edit_post' => ["action" => 'ModeratorController@editPost' , "is_protected" => true,'role'=>['administrator']], //POST
-  'moderator_delete' => ["action" => 'ModeratorController@delete' , "is_protected" => true,'role'=>['administrator']], //GET
+  //wishlist routes
+  'add_to_wishlist' => ["action" => 'WishlistController@add' , "is_protected" => true,'role'=>['user','moderator', 'administrator']], //POST
+  'remove_from_wishlist' => ["action" => 'WishlistController@remove' , "is_protected" => true,'role'=>['user','moderator', 'administrator']], //POST
 
   //error routes
   '404' => ["action" => 'ErrorController@notFound' , "is_protected" => false], //GET

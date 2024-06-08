@@ -18,6 +18,9 @@
     <hr class="dropdown-divider">
     <div class="row">
         <a href="./cart" class="btn btn-secondary col m-2">View My Cart</a>
-        <a href="./checkout_form" class="btn btn-dark col m-2">Checkout</a>
+        <?php if (count($cart_books) > 0): ?>
+            <a href="./checkout_form" class="btn btn-dark col m-2">Checkout</a>
+        <?php endif; ?>
+       
     </div>
 </div>

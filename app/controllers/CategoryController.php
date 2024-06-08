@@ -71,12 +71,11 @@ class CategoryController
             $id = $_POST['id'];
             $category = Category::fetchId($id);
             if($category){
-                $is_deleted = $category->delete();
-                if($is_deleted === true){
+                try{
+                    $category->delete();
                     Helper::session('message', 'Deleted successfully');
                 }
-                else
-                {
+                catch(Exception $e){
                     Helper::session('error', "You can't delete this category.");
                 }
             }

@@ -34,7 +34,10 @@
           <td><?=  htmlentities($book->price) ?> €</td>
           <td>
             <a href="./book_details?id=<?= urlencode($book->id) ?>" class="btn btn-primary">Show</a>
-            <button class="btn btn-danger delete-wishlist" data-id="<?= urlencode($book->id) ?>">Remove from whishlist</button>
+            <form action="./remove_from_wishlist" method="post">
+              <input type="hidden" name="book_id" value="<?= urlencode($book->id) ?>">
+              <button class="btn btn-danger w-100" type="submit">Remove from Wishlist</button>
+            </form>
           </td>
         </tr>
       <?php endforeach; ?>

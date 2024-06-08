@@ -70,12 +70,16 @@ class AuthorController
             $id = $_POST['id'];
             $author = Author::fetchId($id);
             if($author){
-                $is_deleted = $author->delete();
-                if($is_deleted === true){
-                    Helper::session('message', 'Deleted successfully');
-                }
-                else
-                {
+                try {
+                    $is_deleted = $author->delete();
+                    if($is_deleted === true){
+                        Helper::session('message', 'Deleted successfully');
+                    }
+                    else
+                    {
+                        Helper::session('error', "You can't delete this author.");
+                    }
+                } catch (\Throwable $th) {
                     Helper::session('error', "You can't delete this author.");
                 }
             }

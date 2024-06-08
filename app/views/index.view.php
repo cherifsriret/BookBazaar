@@ -34,7 +34,7 @@
   <div class="mt-5">
     <h2>Best Selling books</h2>
     <div class="row row-cols-1 row-cols-md-4 g-3">
-      <?php foreach($mostSellerBooks as $book): ?>
+      <?php foreach($bestSellerBooks as $book): ?>
           <div class="col">
             <div class="card">
               <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">

@@ -14,7 +14,7 @@ class Wishlist extends Model {
     protected $book_id;
 
 
-    public function isWislisted($bookId, $userId)
+    public static function isInWishlist($bookId, $userId)
     {
         $dbh = App::get('dbh');
 
@@ -79,5 +79,7 @@ class Wishlist extends Model {
 
         return $stmt->fetchAll(PDO::FETCH_CLASS, 'Wishlist');
     }
+
+
 
 }

@@ -44,7 +44,7 @@ class BookController
                 $book->price = $price;
                 $book->image = $image;
                 $book->isbn = $isbn;
-                $book->is_featured = $is_featured;
+                $book->is_featured = $is_featured == 'on' ? 1 : 0;
                 $book->create();
                 Helper::session('message', 'Created successfully');
             }
@@ -96,7 +96,7 @@ class BookController
                     $book->price = $price;
                     $book->image = $image;
                     $book->isbn = $isbn;
-                    $book->is_featured = $is_featured;
+                    $book->is_featured = $is_featured == 'on' ? 1 : 0;
                     $book->update();
                     Helper::session('message', 'Updated successfully');
                 }

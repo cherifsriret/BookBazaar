@@ -36,8 +36,11 @@
       $sessionKeys = ['message', 'error'];
       foreach ($sessionKeys as $key) {
           if (isset($_SESSION[$key])) {
-              $style = $key === 'error' ? ' style="background-color: red;"' : ' style="background-color: green;"';
-              echo "<span{$style}>", htmlentities($_SESSION[$key]), "</span>";
+              ?>
+              <div class="alert alert-<?= $key === 'error' ? 'danger' : 'success' ?>" role="alert">
+                <?= htmlentities($_SESSION[$key]) ?>
+              </div>
+        <?php
               unset($_SESSION[$key]);
           }
       }

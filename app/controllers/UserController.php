@@ -37,7 +37,7 @@ class UserController
            else
            {
                 //redirect to login page with error
-                Helper::session('error', 'Invalid username or password');
+                Helper::session('error', 'Invalid username and password OR your account has been banned');
                 Helper::redirect('login_form');
            }
 
@@ -123,7 +123,6 @@ class UserController
             $user->last_name = $last_name;
             $user->phone = $phone;
             $user->password = password_hash($password, PASSWORD_DEFAULT);
-            $user->role = 'user';
             $user->update();
             Helper::session('message', 'User updated successfully');
             Helper::redirect('profile');
@@ -137,15 +136,125 @@ class UserController
 
     public function list_users()
     {
-        $users = User::fetchUsers($_GET['page'] ?? 1,['user']);
-        $users_page_count = User::UsersPageCount( ['user']);
+        $users = User::fetchUsers($_GET['page'] ?? 1);
+        $users_page_count = User::UsersPageCount();
         return Helper::view("admin_users", ['users' => $users ,'currentPage' => $_GET['page'] ?? 1 , 'totalPages' => $users_page_count]);
     }
 
-    public function list_moderators()
+    public function banUser()
     {
-        $users = User::fetchUsers($_GET['page'] ?? 1,['moderator' , 'administrator']);
-        $users_page_count = User::UsersPageCount(['moderator' , 'administrator']);
-        return Helper::view("admin_moderators", ['users' => $users ,'currentPage' => $_GET['page'] ?? 1 , 'totalPages' => $users_page_count]);
+       
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if($_POST['id'] == $_SESSION['user']['id'])
+            {
+                Helper::session('error', 'You cannot ban yourself');
+                Helper::redirect('admin_users');
+            }
+
+            $user = User::fetchId($_POST['id']);
+            if(!$user)
+            {
+                Helper::session('error', 'User not found');
+                Helper::redirect('admin_users');
+            }
+            
+            $user->is_banned = 1;
+            $user->update();
+            Helper::session('message', 'User banned successfully');
+            Helper::redirect('admin_users');
+            
+
+            
+        }
+    }
+
+    public function unbanUser()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $user = User::fetchId($_POST['id']);
+            if(!$user)
+            {
+                Helper::session('error', 'User not found');
+                Helper::redirect('admin_users');
+            }
+
+            $user->is_banned = 0;
+            $user->update();
+            Helper::session('message', 'User unbanned successfully');
+            Helper::redirect('admin_users');
+            
+        }
+    }
+
+    public function edit()
+    {
+        $user = User::fetchId($_GET['id']);
+        return Helper::view("edit_user", ['user' => $user]);
+    }
+
+    public function editPost()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $user = User::fetchId($_POST['id']);
+            $first_name = $_POST['firstName'];
+            $last_name = $_POST['lastName'];
+            $phone = $_POST['phone'];
+            $password = $_POST['password'];
+            $password_confirmation = $_POST['password_confirmation'];
+            $role = $_POST['role'];
+
+            if($password != $password_confirmation)
+            {
+                Helper::session('error', 'Password and password confirmation does not match');
+                Helper::redirect('admin_users'); 
+            }
+            $user->first_name = $first_name;
+            $user->last_name = $last_name;
+            $user->phone = $phone;
+            $user->password = password_hash($password, PASSWORD_DEFAULT);
+            $user->role = $role;
+            $user->update();
+            Helper::session('message', 'User updated successfully');
+            Helper::redirect('admin_users');
+        }
+        else
+        {
+            Helper::session('error', 'Invalid request');
+            Helper::redirect('admin_users');
+        }
+    }
+
+    public function create()
+    {
+        return Helper::view("create_user");
+    }
+
+    public function createPost()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $first_name = $_POST['firstName'];
+            $last_name = $_POST['lastName'];
+            $email = $_POST['email'];
+            $phone = $_POST['phone'];
+            $password = $_POST['password'];
+            $role = $_POST['role'];
+
+            $user = new User();
+            $user->first_name = $first_name;
+            $user->last_name = $last_name;
+            $user->email = $email;
+            $user->phone = $phone;
+            $user->password = password_hash($password, PASSWORD_DEFAULT);
+            $user->role = $role;
+            $user->create();
+            Helper::session('message', 'User created successfully');
+            Helper::redirect('admin_users');
+            
+        }
+        else
+        {
+            Helper::session('error', 'Invalid request');
+            Helper::redirect('admin_users');
+        }
     }
 }

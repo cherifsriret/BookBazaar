@@ -15,7 +15,7 @@ class Book extends Model {
     protected $author_id;
     protected $category_id;
     protected $is_featured;
-
+    
     // Methods
 
     public static function fetchAll( $author = null, $category = null,$page = 1, $limit = 12)
@@ -97,7 +97,7 @@ class Book extends Model {
 
     }
 
-    public static function mostSellerBooks( $limit =4 ){
+    public static function bestSellerBooks( $limit =4 ){
         $dbh = App::get('dbh');
        
 

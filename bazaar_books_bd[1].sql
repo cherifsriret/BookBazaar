@@ -189,6 +189,8 @@ ALTER TABLE `wishlist` ADD CONSTRAINT `wishlist_book_fk` FOREIGN KEY (`book_id`)
 
 ALTER TABLE `wishlist` ADD CONSTRAINT `wishlist_user_fk` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
+ALTER TABLE `user` ADD `is_banned` BOOLEAN NOT NULL DEFAULT FALSE AFTER `role`;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

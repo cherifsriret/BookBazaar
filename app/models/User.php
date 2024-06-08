@@ -3,32 +3,22 @@
 require_once "core/database/Model.php";
 class User extends Model
 {
-   // Attributes
-   protected $id;
+    // Attributes
+    protected $id;
 
-   protected $email;
+    protected $email;
 
-   protected $password;
+    protected $password;
 
-   protected $first_name;
+    protected $first_name;
 
-   protected $last_name;
+    protected $last_name;
 
-   protected $phone;
+    protected $phone;
 
-   protected $role;
+    protected $role;
 
-
-    public function isAdmin()
-    {
-        return $this->role == 'admin';
-    }
-
-    public function isUser()
-    {
-        return $this->role == 'user';
-    }
-    
+    protected $is_banned;    
 
     public static function login($email, $password)
     {
@@ -39,6 +29,11 @@ class User extends Model
         $statement->execute();
         $user = $statement->fetch();
         if ($user && password_verify($password, $user->password)) {
+            //chech if the user is banned
+            if($user->is_banned == 1)
+            {
+                return false;
+            }
             Helper::session('user',  ['id' => $user->id, 'email' => $user->email, 'role' => $user->role ]);
             return $user->id ;
         } else {
@@ -69,13 +64,14 @@ class User extends Model
     }
 
 
-    public static function fetchUsers($page = 1, $roles = ['user'], $limit = 15)
+    public static function fetchUsers($page = 1,  $limit = 15)
     {
         $dbh = App::get('dbh');
         $offset = ($page - 1) * $limit;
         $query = "SELECT * FROM user";
-        if (count($roles) > 0) {
-            $query .= " WHERE role IN ('" . implode("','", $roles) . "')";
+        if($_SESSION['user']['role'] != 'administrator')
+        {
+            $query .= " WHERE role != 'administrator'";
         }
         $query .= " ORDER BY id ASC LIMIT :limit OFFSET :offset";
         $statement = $dbh->prepare($query);
@@ -90,15 +86,12 @@ class User extends Model
         $dbh = App::get('dbh');
         $limit = 15;
         $query = "SELECT COUNT(*) as count FROM user";
-        if (count($roles) > 0) {
-            $query .= " WHERE role IN (" . implode(',', array_fill(0, count($roles), '?')) . ")";
-            $statement = $dbh->prepare($query);
-            $statement->execute($roles);
+        if($_SESSION['user']['role'] != 'administrator')
+        {
+            $query .= " WHERE role != 'administrator'";
         }
-        else {
-            $statement = $dbh->prepare($query);
-            $statement->execute();
-        }
+        $statement = $dbh->prepare($query);
+        $statement->execute();
         $result = $statement->fetch();
         $total = $result['count'];
         return ceil($total /  $limit);

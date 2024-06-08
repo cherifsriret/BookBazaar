@@ -39,6 +39,7 @@ class CartController
                     $cart->user_id = $_SESSION['user']['id'];
                     $cart->create();
                     BookCart::setCurrentCartUser( $_SESSION['user']['id']);
+                    Helper::session('message', 'Added to cart');
                     Helper::redirect('cart');
                 }
             } catch (Exception $e) {
@@ -67,6 +68,8 @@ class CartController
             }
             $cart->delete();
             BookCart::setCurrentCartUser( $_SESSION['user']['id']);
+            Helger::session('message', 'Removed from cart');
+            //return ajax response success
             echo json_encode(['status' => 'success']);
             return;
         }
@@ -94,6 +97,9 @@ class CartController
             $cart->qty = $_POST['qty'];
             $cart->update();
             BookCart::setCurrentCartUser( $_SESSION['user']['id']);
+            var_dump($cart);
+            exit;
+            Helger::session('message', 'Cart updated');
             //return ajax response success
             echo json_encode(['status' => 'success']);
             return;

@@ -74,6 +74,7 @@ class OrderController
         }
         $order->status = $_POST['status'];
         $order->save();
+        Helper::session('message', 'Order status updated successfully');
         Helper::redirect('admin_orders');
     }
 

@@ -3,6 +3,7 @@
 require_once "app/models/Author.php";
 require_once "app/models/Category.php";
 require_once "app/models/Book.php";
+require_once "app/models/Wishlist.php";
 
 class IndexController
 {
@@ -11,8 +12,8 @@ class IndexController
     {
         $latestBooks = Book::latestBooks();
         $featuredBooks = Book::featuredBooks();
-        $mostSellerBooks = Book::mostSellerBooks();
-        return Helper::view("index", ['latestBooks' => $latestBooks,'featuredBooks' => $featuredBooks,'mostSellerBooks' => $mostSellerBooks]);
+        $bestSellerBooks = Book::bestSellerBooks();
+        return Helper::view("index", ['latestBooks' => $latestBooks,'featuredBooks' => $featuredBooks,'bestSellerBooks' => $bestSellerBooks]);
     }
 
     public function all_books()
@@ -26,11 +27,11 @@ class IndexController
 
     public function search()
     {
-        $sugesstions = [];
+        $suggestions = [];
         if(isset($_GET['query'])){
             $books = Book::search($_GET['query']);
             foreach($books as $book){
-                $sugesstions[] = [
+                $suggestions[] = [
                     'title' => $book->title,
                     'data' => $book->id,
                     'image' => $book->image,
@@ -38,7 +39,7 @@ class IndexController
                 ];
             }
         }
-       echo json_encode($sugesstions);
+       echo json_encode($suggestions);
        exit;
     }  
     
@@ -49,10 +50,16 @@ class IndexController
             // Redirect to 404 page not found
             Helper::redirect('404');
         }
+        
         $book->author = Author::fetchId($book->author_id);
         $book->category = Author::fetchId($book->category_id);
         $books_same_author = Book::fetchSameAuthor($book->author_id,$book->id);
         $books_same_category = Book::fetchSameCategory($book->category_id,$book->id);
-        return Helper::view("book_details", ['book' => $book , 'books_same_author' => $books_same_author , 'books_same_category' => $books_same_category]);
+        if(!isset($_SESSION['user'])){
+            return Helper::view("book_details", ['book' => $book , 'books_same_author' => $books_same_author , 'books_same_category' => $books_same_category , 'is_in_wishlist' => false]);
+        }
+        $current_user = $_SESSION['user']['id'];
+        $is_in_wishlist = Wishlist::isInWishlist($book->id , $current_user);
+        return Helper::view("book_details", ['book' => $book , 'books_same_author' => $books_same_author , 'books_same_category' => $books_same_category , 'is_in_wishlist' => $is_in_wishlist]);
     }
 }

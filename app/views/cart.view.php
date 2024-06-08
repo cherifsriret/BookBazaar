@@ -85,7 +85,11 @@
                         </tbody>
                     </table>
                     <div class="text-center m-5">
-                        <a href="./checkout_form" class="btn btn-dark" title="">Proceed to Checkout</a>
+                        <?php if (count($cart_books) > 0): ?>
+                            <a href="./checkout_form" class="btn btn-dark"  title="">Proceed to Checkout</a>
+                        <?php else: ?>
+                            <a href="./all_books" class="btn btn-dark"  title="">Continue Shopping</a>
+                        <?php endif; ?>
                     </div>
                     <!-- /.btn-cart-totals -->
                 </form>

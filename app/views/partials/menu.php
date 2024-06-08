@@ -3,8 +3,7 @@
     <li><a href="./all_books" class="nav-link px-2">All Books</a></li>
     <?php if($currentUser): ?>
         <li><a href="./my_orders" class="nav-link px-2">My Orders</a></li>
-        <li><a href="./wishlist" class="nav-link px-2">Withlist</a></li>
-        <li><a href="./checkout_form" class="nav-link px-2">Checkout</a></li>
+        <li><a href="./wishlist" class="nav-link px-2">Wishlist</a></li>
         <li><a href="./profile" class="nav-link px-2">Profile</a></li>
         <?php if($currentUser['role'] == 'moderator' || $currentUser['role'] == 'administrator'): ?>
             <li>
@@ -18,9 +17,6 @@
                         <a class="dropdown-item" href="./admin_authors">Authors Managment</a>
                         <a class="dropdown-item" href="./admin_categories">Categories Managment</a>
                         <a class="dropdown-item" href="./admin_users">Users Managment</a>
-                        <?php if($currentUser['role'] == 'administrator'): ?>
-                            <a class="dropdown-item" href="./admin_moderators">Moderator Managment</a>
-                        <?php endif; ?>
                     </div>
             </li>
         <?php endif; ?>

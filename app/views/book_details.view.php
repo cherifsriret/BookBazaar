@@ -30,6 +30,20 @@
         <button class="btn btn-primary me-2 w-100" type="submit">Add to Cart</button>
         <hr>
       </form>
+      <?php if($currentUser): ?>
+        <!-- add or delete from wishlist -->
+        <?php if($is_in_wishlist): ?>
+          <form action="./remove_from_wishlist" method="post">
+            <input type="hidden" name="book_id" value="<?= urlencode($book->id) ?>">
+            <button class="btn btn-danger w-100" type="submit">Remove from Wishlist</button>
+          </form>
+        <?php else: ?>
+          <form action="./add_to_wishlist" method="post">
+            <input type="hidden" name="book_id" value="<?= urlencode($book->id) ?>">
+            <button class="btn btn-success w-100" type="submit">Add to Wishlist</button>
+          </form>
+        <?php endif; ?>
+      <?php endif; ?>
     </div>
   </div>
 

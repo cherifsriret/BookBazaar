@@ -7,9 +7,22 @@
   <h1 class="text-center m-5">All Books Page</h1>
   <?php require('partials/search.php') ?>
   <!-- filer form -->
-  <form class="row g-3 my-3" method="GET" action="all_books">
-    <div class="col-md-3">
-      <label for="author" class="form-label">Author</label>
+  <form class="row g-3 mt-3">
+    <div class="col-auto">
+      <label for="category" class="col-form-label">Category</label>
+    </div>
+    <div class="col">
+      <select class="form-select" id="category" name="category">
+        <option selected value="">Choose...</option>
+        <?php foreach($all_categories as $category): ?>
+          <option value="<?= urlencode($category->id) ?>" <?= $selected_category == urlencode($category->id)  ? 'selected' : '' ?>><?=  htmlentities($category->name) ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <div class="col-auto">
+      <label for="author" class="col-form-label">Author</label>
+    </div>
+    <div class="col">
       <select class="form-select" id="author" name="author">
         <option selected  value="">Choose...</option>
         <?php foreach($all_authors as $author): ?>
@@ -17,23 +30,12 @@
         <?php endforeach; ?>
       </select>
     </div>
-    <div class="col-md-3">
-      <div class="form-group">
-        <label for="category" class="form-label">Category</label>
-        <select class="form-select" id="category" name="category">
-          <option selected value="">Choose...</option>
-          <?php foreach($all_categories as $category): ?>
-            <option value="<?= urlencode($category->id) ?>" <?= $selected_category == urlencode($category->id)  ? 'selected' : '' ?>><?=  htmlentities($category->name) ?></option>
-          <?php endforeach; ?>
-        </select>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <button type="submit" class="btn btn-dark mt-2 p-3">Filter</button>
+    <div class="col">
+      <button type="submit" class="btn btn-dark mb-3">Filter</button>
     </div>
   </form>
+  <!-- end filter form -->
   <div class="row row-cols-1 row-cols-md-4 row-cols-sm-2 row-cols-xm-1 g-3 my-5">
-
     <?php foreach($books as $book): ?>
       <div class="col">
         <div class="card">
