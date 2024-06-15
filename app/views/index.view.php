@@ -17,13 +17,15 @@
       <?php foreach($latestBooks as $book): ?>
         <div class="col">
           <div class="card">
-            <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
+              <a  href="./book_details?id=<?= urlencode($book->id) ?>">
+                  <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
+              </a>
             <div class="card-body">
               <h5 class="card-title"><?= htmlentities($book->title) ?></h5>
               <p class="card-text"><?= htmlentities($book->price) ?> €</p>
             </div>
             <div class="card-footer text-center"> 
-              <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Add To Cart</a>
+              <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Show Details</a>
             </div>
           </div>
         </div>
@@ -37,13 +39,15 @@
       <?php foreach($bestSellerBooks as $book): ?>
           <div class="col">
             <div class="card">
-              <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
+                <a  href="./book_details?id=<?= urlencode($book->id) ?>">
+                    <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
+                </a>
               <div class="card-body">
                 <h5 class="card-title"><?= htmlentities($book->title) ?></h5>
                 <p class="card-text"><?= htmlentities($book->price) ?> €</p>
               </div>
               <div class="card-footer text-center"> 
-                <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Add To Cart</a>
+                <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Show Details</a>
               </div>
             </div>
           </div>
@@ -57,13 +61,15 @@
       <?php foreach($featuredBooks as $book): ?>
         <div class="col">
           <div class="card">
-              <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
+              <a  href="./book_details?id=<?= urlencode($book->id) ?>">
+                <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
+              </a>
               <div class="card-body">
                 <h5 class="card-title"><?= htmlentities($book->title) ?></h5>
                 <p class="card-text"><?= htmlentities($book->price) ?> €</p>
               </div>
               <div class="card-footer text-center"> 
-                <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Add To Cart</a>
+                <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Show Details</a>
               </div>
             </div>
         </div>

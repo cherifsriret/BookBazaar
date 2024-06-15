@@ -181,12 +181,22 @@
 	padding-top: 25px;
 }
 
-/* 
-img.card-img-top {
-    max-height: 300px;
-    width: auto !important;
+
+.card a {
+    margin: auto;
+    padding: 15px 5px 10px 5px;
 }
 
-.card-body {
-    height: 200px;
-} */
+.card img.card-img-top {
+    max-height: 250px;
+    width: min-content;
+    padding: 15px 5px 10px 5px;
+    max-width: -webkit-fill-available;
+}
+
+.card h5.card-title {
+    font-size: 16px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

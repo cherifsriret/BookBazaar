@@ -1,10 +1,9 @@
 <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-    <li><a href="./" class="nav-link px-2 link-secondary">Home</a></li>
-    <li><a href="./all_books" class="nav-link px-2">All Books</a></li>
+    <li><a href="./all_books" class="nav-link text-light px-2">All Books</a></li>
     <?php if($currentUser): ?>
-        <li><a href="./my_orders" class="nav-link px-2">My Orders</a></li>
-        <li><a href="./wishlist" class="nav-link px-2">Wishlist</a></li>
-        <li><a href="./profile" class="nav-link px-2">Profile</a></li>
+        <li><a href="./my_orders" class="nav-link text-light px-2">My Orders</a></li>
+        <li><a href="./wishlist" class="nav-link text-light px-2">Wishlist</a></li>
+        <li><a href="./profile" class="nav-link text-light px-2">Profile</a></li>
         <?php if($currentUser['role'] == 'moderator' || $currentUser['role'] == 'administrator'): ?>
             <li>
                 <div class="dropdown">
@@ -23,7 +22,7 @@
         <li> 
             <form class="logout-form" action="logout" method="post">
                 <div class="form-group">
-                    <button class="nav-link px-2" type="submit">Logout</button>
+                    <button class="nav-link text-light px-2" type="submit">Logout</button>
                 </div>
             </form>
         </li>
@@ -54,9 +53,9 @@
                 </form>
             </div>
         </li>
-        <li><a href="./register_form" class="nav-link px-2">Register</a></li>
+        <li><a href="./register_form" class="nav-link text-light px-2">Register</a></li>
     <?php endif; ?>
     <?php if($currentUser && $currentUser['role'] == 'admin'): ?>
-        <li><a href="./admin" class="nav-link px-2">Admin</a></li>
+        <li><a href="./admin" class="nav-link text-light px-2">Admin</a></li>
     <?php endif; ?>
 </ul>

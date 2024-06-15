@@ -9,7 +9,7 @@
       require('partials/search.php')
   ?>
   <div class="row m-5">
-    <div class="col-lg-6 border">
+    <div class="col-lg-6 border text-center p-2">
       <img src="<?= htmlentities($book->image) ?>" class="img-fluid" alt="Product Image">
     </div>
     <div class="col-lg-6">
@@ -54,13 +54,15 @@
       <?php foreach($books_same_author as $book): ?>
         <div class="col">
           <div class="card">
-              <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
+              <a  href="./book_details?id=<?= urlencode($book->id) ?>">
+                  <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
+              </a>
               <div class="card-body">
                 <h5 class="card-title"><?= htmlentities($book->title) ?></h5>
                 <p class="card-text"><?= htmlentities($book->price) ?> €</p>
               </div>
               <div class="card-footer text-center"> 
-                <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Add To Cart</a>
+                <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Show Details</a>
               </div>
             </div>
         </div>
@@ -74,13 +76,15 @@
       <?php foreach($books_same_category as $book): ?>
         <div class="col">
           <div class="card">
-              <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
+              <a  href="./book_details?id=<?= urlencode($book->id) ?>">
+                  <img src="<?= htmlentities($book->image) ?>" class="card-img-top" alt="...">
+              </a>
               <div class="card-body">
                 <h5 class="card-title"><?= htmlentities($book->title) ?></h5>
                 <p class="card-text"><?= htmlentities($book->price) ?> €</p>
               </div>
               <div class="card-footer text-center"> 
-                <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Add To Cart</a>
+                <a class="btn btn-dark" href="./book_details?id=<?= urlencode($book->id) ?>">Show Details</a>
               </div>
             </div>
         </div>
